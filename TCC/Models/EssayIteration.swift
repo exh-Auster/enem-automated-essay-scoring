@@ -11,17 +11,22 @@ import SwiftData
 @Model
 class EssayIteration {
     var essay: Essay?
-    var date: Date
+    var creationDate: Date
+    var submissionDate: Date?
     var paragraphs: [String] = []
     
     init(essay: Essay? = nil, date: Date, paragraphs: [String] = []) {
         self.essay = essay
-        self.date = date
+        self.creationDate = date
         self.paragraphs = paragraphs
     }
 }
 
 extension EssayIteration {
+    var isCompleted: Bool {
+        submissionDate != nil
+    }
+    
     var fullText: String {
         paragraphs.joined(separator: "\n\n")
     }
