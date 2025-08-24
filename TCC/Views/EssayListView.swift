@@ -54,15 +54,6 @@ struct EssayListView: View {
         }
     }
     
-    private func createEssay() {
-        let topic = Topic.topics.first!
-        
-        let newEssay = Essay(topic: Topic(title: topic.title, source: topic.source, essays: topic.essays)) // TODO: fix
-        
-        modelContext.insert(newEssay)
-        try! modelContext.save()
-    }
-    
     private func deleteEssays(at indexSet: IndexSet) {
         for index in indexSet {
             let essay = essays[index]
