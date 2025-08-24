@@ -28,15 +28,22 @@ extension EssayIteration {
     }
     
     var fullText: String {
-        paragraphs.joined(separator: "\n\n")
+        get {
+            paragraphs.joined(separator: "\n\n")
+        }
+        
+        set {
+            // FIXME: separate by any number of new lines
+            paragraphs = newValue.components(separatedBy: "\n\n")
+        }
     }
     
-    // TODO: fix value zero
+    // FIXME: value zero
     var wordCount: Int {
         fullText.components(separatedBy: " ").count
     }
     
-    // TODO: fix value zero
+    // FIXME: value zero
     var paragraphCount: Int {
         fullText.count { $0.isNewline } / 2 + 1
     }

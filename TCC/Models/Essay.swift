@@ -12,6 +12,7 @@ import SwiftData
 class Essay {
     var topic: Topic?
     var iterations: [EssayIteration] = []
+    var creationDate: Date? = Date.now
     
     init(topic: Topic, iterations: [EssayIteration] = []) {
         self.topic = topic
@@ -19,3 +20,12 @@ class Essay {
     }
 }
 
+extension Essay {
+//    static let sampleData = Topic.topics.map { topic in
+//        Essay(topic: topic)
+//    }
+    
+    static var sampleData: [Essay] {
+        (1..<5).map { Essay(topic: Topic.topics[$0]) }
+    }
+}

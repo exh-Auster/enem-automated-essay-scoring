@@ -24,6 +24,6 @@ struct Score {
     var c5: ScoreValues
     
     var total: Int {
-        [c1, c2, c3, c4, c5].map(\.rawValue).reduce(0, +)
+        [c1, c2, c3, c4, c5].reduce(0) { $0 + $1.rawValue }
     }
 }
