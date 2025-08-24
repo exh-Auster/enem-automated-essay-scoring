@@ -9,6 +9,7 @@ import SwiftUI
 
 struct IterationReviewView: View {
     @Bindable var iteration: EssayIteration
+    @State private var isSubmitted = false
     
     var body: some View {
         ScrollView {
@@ -19,14 +20,19 @@ struct IterationReviewView: View {
                 .padding()
         }
         .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                // TODO: implement
-                NavigationLink {
-                    ProgressView()
+            ToolbarItem(placement: .confirmationAction) {                
+                Button {
+                    // TODO: implement
+                    iteration.submissionDate = .now
+                    isSubmitted = true
                 } label: {
                     Label("Enviar", systemImage: "arrow.up")
                 }
             }
+        }
+        .navigationDestination(isPresented: $isSubmitted) {
+            // TODO: implement
+            ProgressView()
         }
     }
 }

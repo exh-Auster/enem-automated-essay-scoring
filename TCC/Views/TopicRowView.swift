@@ -14,6 +14,7 @@ struct TopicRowView: View {
         VStack(alignment: .leading) {
             if let source = topic.source {
                 Text(source)
+                    .textScale(.secondary) // TODO: confirm
                     .fontWeight(.semibold)
                     .fontWidth(.condensed)
             }

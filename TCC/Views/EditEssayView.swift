@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ExpandButton: View {
     @Binding var isExpanded: Bool
@@ -41,40 +42,61 @@ struct SectionHeader: View {
 }
 
 struct EditEssayView: View {
-    @Binding var iteration: EssayIteration
+    @Bindable var iteration: EssayIteration
+    @Environment(\.modelContext) var modelContext
+    
     @State private var expandedStates: [Bool]
     
-    init(iteration: Binding<EssayIteration>, expandedStates: [Bool] = []) {
-        self._iteration = iteration
-        self._expandedStates = State(initialValue: Array(repeating: true, count: iteration.wrappedValue.paragraphCount))
+    init(iteration: EssayIteration) {
+        self.iteration = iteration
+        self.expandedStates = Array(repeating: true, count: iteration.paragraphCount)
     }
     
     var body: some View {
-        Form {
-//            Button("Adicionar parágrafo", systemImage: "plus") {
-//                addParagraph(at: 0)
-//            }
-            
-            ForEach($iteration.paragraphs.indices, id: \.self) { i in
-                Section(isExpanded: $expandedStates[i]) {
-                    TextEditor(text: $iteration.paragraphs[i])
-                        .frame(minHeight: 300) // TODO: make dynamic
-                        .contextMenu {
-                            Button("Apagar parágrafo", systemImage: "trash", role: .destructive) {
-                                removeParagraphs(at: IndexSet(integer: i))
+        Group {
+            if iteration.paragraphs.isEmpty {
+                ContentUnavailableView {
+                    Label("Adicione seu primeiro parágrafo", systemImage: "text.page")
+                } description: {
+                    Text("A estrutura sugerida para a redação do ENEM é de quatro parágrafos: um de introdução, dois de desenvolvimento e um de conclusão.")
+                } actions: {
+                    // TODO: extract & fix logic
+                    Button("Adicionar um parágrafo") { addParagraph(at: 0) }
+                        .buttonStyle(.bordered)
+                    Button("Adicionar quatro parágrafos") { for _ in 1...4 { addParagraph(at: 0) } }
+                        .buttonStyle(.borderedProminent)
+                    Button("Adicionar cinco parágrafos") { for _ in 1...5 { addParagraph(at: 0) } }
+                        .buttonStyle(.bordered)
+                }
+            } else {
+                Form {
+                    //            Button("Adicionar parágrafo", systemImage: "plus") {
+                    //                addParagraph(at: 0)
+                    //            }
+                    
+                    ForEach($iteration.paragraphs.indices, id: \.self) { i in
+                        Section(isExpanded: $expandedStates[i]) {
+                            TextEditor(text: $iteration.paragraphs[i])
+                                .frame(minHeight: 300) // TODO: make dynamic
+                                .contextMenu {
+                                    Button("Apagar parágrafo", systemImage: "trash", role: .destructive) {
+                                        removeParagraphs(at: IndexSet(integer: i))
+                                    }
+                                }
+                            
+                            Button("Adicionar parágrafo", systemImage: "plus") {
+                                addParagraph(at: i + 1)
                             }
+                        } header: {
+                            SectionHeader(
+                                title: "Parágrafo \(i + 1) (\(iteration.paragraphs[i].components(separatedBy: " ").count) palavras)",
+                                isExpanded: $expandedStates[i]
+                            )
                         }
-                    Button("Adicionar parágrafo", systemImage: "plus") {
-                        addParagraph(at: i + 1)
                     }
-                } header: {
-                    SectionHeader(
-                        title: "Parágrafo \(i + 1) (\(iteration.paragraphs[i].components(separatedBy: " ").count) palavras)",
-                        isExpanded: $expandedStates[i]
-                    )
+                    .onDelete(perform: removeParagraphs)
                 }
             }
-            .onDelete(perform: removeParagraphs)
         }
         .listRowSpacing(10)
         .scrollDismissesKeyboard(.interactively)
@@ -84,21 +106,13 @@ struct EditEssayView: View {
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("Submit", systemImage: "arrow.right") { } // TODO: implement
-            }
-            
-            ToolbarItem {
-                Menu("More", systemImage: "ellipsis") {
-                    NavigationLink { // TODO: extract
-                        ScrollView {
-                            Text(iteration.fullText)
-                                .fontDesign(.serif)
-                                .padding()
-                        }
-                    } label: {
-                        Label("Texto completo", systemImage: "text.document")
-                    }
+                NavigationLink {
+                    IterationReviewView(iteration: iteration)
+                } label: {
+                    Label("Submit", systemImage: "arrow.right")
                 }
+                // TODO: revisit approach
+                .disabled(iteration.paragraphs.isEmpty)
             }
         }
     }
@@ -119,10 +133,14 @@ struct EditEssayView: View {
 }
 
 #Preview {
+    @Previewable @State var isPresented = true
+    let iteration = SampleData.shared.iteration
+    
     NavigationStack {
-        Text("")
-            .navigationDestination(isPresented: .constant(true)) {
-                EditEssayView(iteration: .constant(EssayIteration.sampleData.first!))
+        Button(isPresented.description) { isPresented.toggle() }
+            .navigationDestination(isPresented: $isPresented) {
+                EditEssayView(iteration: iteration)
             }
     }
+    .modelContainer(SampleData.shared.modelContainer)
 }
