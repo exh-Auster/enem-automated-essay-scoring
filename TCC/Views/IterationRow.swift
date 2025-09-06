@@ -41,7 +41,7 @@ struct IterationRow: View {
             
             Spacer()
             
-            ScoreBadgeView(type: iteration.isCompleted ? .total : .pending, score: score)
+            ScoreBadgeView(type: iteration.isCompleted ? .totalSmall : .pending, score: score)
         }
     }
 }

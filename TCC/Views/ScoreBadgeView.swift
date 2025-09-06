@@ -10,7 +10,32 @@ import SwiftUI
 enum ScoreBadgeType {
     case pending
     case individual
-    case total
+    case totalSmall
+    case totalLarge
+    
+    var width: Double {
+        switch self {
+        case .totalLarge:
+            return 180
+        case .individual:
+            return 65
+        case .pending, .totalSmall:
+            return 40
+        }
+    }
+    
+    var font: Font? {
+        switch self {
+        case .pending:
+            return nil
+        case .individual:
+            return .title3
+        case .totalSmall:
+            return .footnote
+        case .totalLarge:
+            return .largeTitle
+        }
+    }
 }
 
 struct ScoreBadgeView: View {
@@ -23,7 +48,7 @@ struct ScoreBadgeView: View {
     
     // TODO: define the colors
     var badgeColor: Color {
-        switch (type == .individual ? score : score / 4) {
+        switch (type == .individual ? score : score / 5) {
         case 200:
             return .green
         case 160..<200:
@@ -44,7 +69,8 @@ struct ScoreBadgeView: View {
     var body: some View {
         ZStack {
             Circle()
-                .frame(width: label != nil ? 65 : 40)
+//                .frame(width: label != nil ? 65 : 40)
+                .frame(width: type.width)
                 .foregroundStyle(badgeColor)
             
             if type != .pending {
@@ -56,7 +82,8 @@ struct ScoreBadgeView: View {
                     }
                     
                     Text("\(score)")
-                        .font((label != nil) ? .title3 : .footnote)
+//                        .font((label != nil) ? .title3 : .footnote)
+                        .font(type.font)
                         .bold()
                 }
                 .foregroundStyle(.white)
@@ -64,7 +91,8 @@ struct ScoreBadgeView: View {
                 // TODO: improve and extract
                 if colorScheme == .dark {
                     Circle()
-                        .frame(width: label != nil ? 65 : 40)
+//                        .frame(width: label != nil ? 65 : 40)
+                        .frame(width: type.width)
                         .overlay(
                             Circle()
                                 .fill(
@@ -104,6 +132,8 @@ struct ScoreBadgeView: View {
 
 #Preview("Light Mode") {
     VStack {
+        ScoreBadgeView(type: .totalLarge, score: 1000)
+        
         HStack {
             ScoreBadgeView(label: "C1", score: 200)
             ScoreBadgeView(label: "C2", score: 160)
@@ -115,7 +145,7 @@ struct ScoreBadgeView: View {
         ScoreBadgeView(label: "C5", score: 0)
         
         HStack {
-            ScoreBadgeView(type: .total, score: 200)
+            ScoreBadgeView(type: .totalSmall, score: 200)
             
             ScoreBadgeView(type: .pending, score: 0)
         }
@@ -125,6 +155,8 @@ struct ScoreBadgeView: View {
 
 #Preview("Dark Mode") {
     VStack {
+        ScoreBadgeView(type: .totalLarge, score: 1000)
+        
         HStack {
             ScoreBadgeView(label: "C1", score: 200)
             ScoreBadgeView(label: "C2", score: 160)
@@ -136,7 +168,7 @@ struct ScoreBadgeView: View {
         ScoreBadgeView(label: "C5", score: 0)
         
         HStack {
-            ScoreBadgeView(type: .total, score: 200)
+            ScoreBadgeView(type: .totalSmall, score: 200)
             
             ScoreBadgeView(type: .pending, score: 0)
         }
