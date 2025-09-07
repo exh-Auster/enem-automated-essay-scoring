@@ -10,12 +10,13 @@ import SwiftData
 
 struct ContentView: View {
     @State private var searchText = ""
+    @State private var path = NavigationPath()
     
     var body: some View {
         TabView {
             Tab("Redações", systemImage: "book.pages.fill") {
-                NavigationStack {
-                    EssayListView()
+                NavigationStack(path: $path) {
+                    EssayListView(path: $path)
                 }
             }
             

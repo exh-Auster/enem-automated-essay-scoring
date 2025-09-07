@@ -15,6 +15,8 @@ struct EssayListView: View {
     @State private var showingCreateEssaySheet = false
     @State private var selectedEssay: Essay?
     
+    @Binding var path: NavigationPath
+    
     var body: some View {
         Group {
             if essays.isEmpty {
@@ -36,7 +38,7 @@ struct EssayListView: View {
 //        .background(.background)
         .navigationTitle("Redações")
 //        .toolbarTitleDisplayMode(.inlineLarge)
-        .navigationDestination(for: Essay.self, destination: { IterationListView(essay: $0) })
+        .navigationDestination(for: Essay.self, destination: { IterationListView(essay: $0, path: $path) })
         .sheet(isPresented: $showingCreateEssaySheet) {
             NavigationStack {
                 CreateEssayView()
@@ -65,8 +67,10 @@ struct EssayListView: View {
 }
 
 #Preview {
+    @Previewable @State var path = NavigationPath()
+    
     NavigationStack {
-        EssayListView()
+        EssayListView(path: $path)
             .modelContainer(SampleData.shared.modelContainer)
     }
     .modelContainer(SampleData.shared.modelContainer)

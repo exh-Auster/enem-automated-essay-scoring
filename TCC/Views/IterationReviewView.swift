@@ -11,6 +11,8 @@ struct IterationReviewView: View {
     @Bindable var iteration: EssayIteration
     @State private var isSubmitted = false
     
+    @Binding var path: NavigationPath
+    
     var body: some View {
         ScrollView {
             Text(iteration.fullText)
@@ -20,7 +22,7 @@ struct IterationReviewView: View {
                 .padding()
         }
         .toolbar {
-            ToolbarItem(placement: .confirmationAction) {                
+            ToolbarItem(placement: .confirmationAction) {
                 Button {
                     // TODO: implement
                     iteration.submissionDate = .now
@@ -31,14 +33,15 @@ struct IterationReviewView: View {
             }
         }
         .navigationDestination(isPresented: $isSubmitted) {
-            // TODO: implement
-            ProgressView()
+            ResultsView(iteration: iteration, isFirstPresentation: true, path: $path)
         }
     }
 }
 
 #Preview {
+    @Previewable @State var path = NavigationPath()
+    
     NavigationStack {
-        IterationReviewView(iteration: SampleData.shared.iteration)
+        IterationReviewView(iteration: SampleData.shared.iteration, path: $path)
     }
 }

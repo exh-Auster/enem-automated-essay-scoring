@@ -47,9 +47,12 @@ struct EditEssayView: View {
     
     @State private var expandedStates: [Bool]
     
-    init(iteration: EssayIteration) {
+    @Binding var path: NavigationPath
+    
+    init(iteration: EssayIteration, path: Binding<NavigationPath>) {
         self.iteration = iteration
         self.expandedStates = Array(repeating: true, count: iteration.paragraphCount)
+        self._path = path
     }
     
     var body: some View {
@@ -65,8 +68,8 @@ struct EditEssayView: View {
                         .buttonStyle(.bordered)
                     Button("Adicionar quatro parágrafos") { for _ in 1...4 { addParagraph(at: 0) } }
                         .buttonStyle(.borderedProminent)
-                    Button("Adicionar cinco parágrafos") { for _ in 1...5 { addParagraph(at: 0) } }
-                        .buttonStyle(.bordered)
+//                    Button("Adicionar cinco parágrafos") { for _ in 1...5 { addParagraph(at: 0) } }
+//                        .buttonStyle(.bordered)
                 }
             } else {
                 Form {
@@ -107,7 +110,7 @@ struct EditEssayView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 NavigationLink {
-                    IterationReviewView(iteration: iteration)
+                    IterationReviewView(iteration: iteration, path: $path)
                 } label: {
                     Label("Submit", systemImage: "arrow.right")
                 }
@@ -134,12 +137,14 @@ struct EditEssayView: View {
 
 #Preview {
     @Previewable @State var isPresented = true
+    @Previewable @State var path = NavigationPath()
+    
     let iteration = SampleData.shared.iteration
     
     NavigationStack {
         Button(isPresented.description) { isPresented.toggle() }
             .navigationDestination(isPresented: $isPresented) {
-                EditEssayView(iteration: iteration)
+                EditEssayView(iteration: iteration, path: $path)
             }
     }
     .modelContainer(SampleData.shared.modelContainer)

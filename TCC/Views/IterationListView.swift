@@ -12,6 +12,8 @@ struct IterationListView: View {
     @Environment(\.modelContext) var modelContext
     @Bindable var essay: Essay
     
+    @Binding var path: NavigationPath
+    
     var body: some View {
         Group {
             if essay.iterations.isEmpty {
@@ -45,9 +47,9 @@ struct IterationListView: View {
         .navigationSubtitle(essay.topic?.title ?? "")
         .navigationDestination(for: EssayIteration.self, destination: { iteration in
             if iteration.isCompleted {
-                ResultsView(iteration: iteration)
+                ResultsView(iteration: iteration, path: $path)
             } else {
-                EditEssayView(iteration: iteration)
+                EditEssayView(iteration: iteration, path: $path)
             }
         })
         .toolbar {
@@ -89,6 +91,7 @@ struct IterationListView: View {
 }
 
 #Preview {
+    @Previewable @State var path = NavigationPath()
     // TODO: fix preview data
     
     let iterations = (0..<15).map { _ in
@@ -104,7 +107,7 @@ struct IterationListView: View {
     )
     
     NavigationStack {
-        IterationListView(essay: essay)
+        IterationListView(essay: essay, path: $path)
             .modelContainer(SampleData.shared.modelContainer)
     }
     .preferredColorScheme(.dark)
