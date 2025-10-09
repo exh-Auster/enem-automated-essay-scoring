@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ResultsView: View {
+    @AppStorage("debugEnabled") var debugEnabled = false
+    
     let iteration: EssayIteration
     var isFirstPresentation: Bool = false
     
@@ -32,6 +34,17 @@ struct ResultsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(isFirstPresentation)
         .toolbar {
+            if debugEnabled {
+                ToolbarItem(placement: .topBarLeading) {
+                    NavigationLink {
+                        IterationDebugView(iteration: iteration)
+                    } label: {
+                        Label("Debug", systemImage: "ant")
+                    }
+                    // TODO: conditionally disable
+                }
+            }
+            
             if isFirstPresentation {
 //                ToolbarItem(placement: .topBarLeading) {
 //                    Button("Concluir", systemImage: "chevron.left") {

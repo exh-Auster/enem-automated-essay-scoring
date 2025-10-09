@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct IterationReviewView: View {
+    @AppStorage("debugEnabled") var debugEnabled = false
+    
     @Bindable var iteration: EssayIteration
     @State private var isSubmitted = false
     
@@ -22,6 +24,17 @@ struct IterationReviewView: View {
                 .padding()
         }
         .toolbar {
+            if debugEnabled {
+                ToolbarItem(placement: .topBarLeading) {
+                    NavigationLink {
+                        IterationDebugView(iteration: iteration)
+                    } label: {
+                        Label("Debug", systemImage: "ant")
+                    }
+                    // TODO: conditionally disable
+                }
+            }
+            
             ToolbarItem(placement: .confirmationAction) {
                 Button {
                     // TODO: implement
