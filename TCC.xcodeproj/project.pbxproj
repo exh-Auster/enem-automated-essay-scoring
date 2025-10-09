@@ -86,11 +86,11 @@
 				};
 			};
 			buildConfigurationList = 210373FD2E3699FA0023FE47 /* Build configuration list for PBXProject "TCC" */;
-			developmentRegion = en;
+			developmentRegion = "pt-BR";
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				Base,
+				"pt-BR",
 			);
 			mainGroup = 210373F92E3699FA0023FE47;
 			minimizedProjectReferenceProxies = 1;
