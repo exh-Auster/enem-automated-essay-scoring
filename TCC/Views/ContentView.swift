@@ -9,7 +9,6 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    @State private var searchText = ""
     @State private var path = NavigationPath()
     
     var body: some View {
@@ -20,15 +19,8 @@ struct ContentView: View {
                 }
             }
             
-            Tab("Estatísticas", systemImage: "chart.bar.fill") {
+            Tab("Guia", systemImage: "text.book.closed") {
                 Text("WIP")
-            }
-            
-            Tab("Pesquisar", systemImage: "magnifyingglass", role: .search) {
-                NavigationStack {
-                    ContentUnavailableView.search
-                }
-                .searchable(text: $searchText)
             }
         }
     }
