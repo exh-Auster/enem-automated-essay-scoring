@@ -13,6 +13,8 @@ struct EssayListView: View {
     @Query(sort: \Essay.creationDate, order: .reverse, animation: .bouncy) var essays: [Essay] // FIXME: sorting criteria
     
     @State private var showingCreateEssaySheet = false
+    @State private var isShowingSettings = false
+    
     @State private var selectedEssay: Essay?
     
     @Binding var path: NavigationPath
@@ -34,6 +36,28 @@ struct EssayListView: View {
                 }
             }
         }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Configurações", systemImage: "gear") {
+                    isShowingSettings = true
+                }
+            }
+            
+            ToolbarSpacer(placement: .topBarTrailing)
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showingCreateEssaySheet = true
+                } label: {
+                    Label("Nova redação", systemImage: "plus")
+                }
+            }
+        }
+        .sheet(isPresented: $isShowingSettings) {
+            NavigationStack {
+                SettingsView()
+            }
+        }
         .background(Color(.systemGroupedBackground)) // TODO: confirm
 //        .background(.background)
         .navigationTitle("Redações")
@@ -43,15 +67,6 @@ struct EssayListView: View {
             NavigationStack {
                 CreateEssayView()
 //                    .navigationBarTitleDisplayMode(.inline)
-            }
-        }
-        .toolbar {
-            ToolbarItem {
-                Button {
-                    showingCreateEssaySheet = true
-                } label: {
-                    Label("Nova redação", systemImage: "plus")
-                }
             }
         }
     }
