@@ -42,6 +42,8 @@ struct SectionHeader: View {
 }
 
 struct EditEssayView: View {
+    @AppStorage("debugEnabled") var debugEnabled = false
+    
     @Bindable var iteration: EssayIteration
     @Environment(\.modelContext) var modelContext
     
@@ -108,6 +110,17 @@ struct EditEssayView: View {
         .navigationSubtitle("Palavras: \(iteration.wordCount) | Parágrafos: \(iteration.paragraphCount)")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
+            if debugEnabled {
+                ToolbarItem(placement: .topBarLeading) {
+                    NavigationLink {
+                        IterationDebugView(iteration: iteration)
+                    } label: {
+                        Label("Debug", systemImage: "ant")
+                    }
+                    // TODO: conditionally disable
+                }
+            }
+            
             ToolbarItem(placement: .confirmationAction) {
                 NavigationLink {
                     IterationReviewView(iteration: iteration, path: $path)
