@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Tokenizers
 
 struct ResultsView: View {
     let iteration: EssayIteration
