@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @AppStorage("debugEnabled") var debugEnabled = false
+    @AppStorage("needsOnboarding") var needsOnboarding = true
     
     @Environment(\.dismiss) var dismiss
     
@@ -24,6 +25,12 @@ struct SettingsView: View {
                 }
             } footer: {
                 Text("Detalhes e métricas dos modelos de Avaliação Automática de Redação.")
+            }
+            
+            Section {
+                Button("Refazer Introdução", systemImage: "arrow.counterclockwise") {
+                    needsOnboarding = true
+                }
             }
             
             if debugToggleVisible || debugEnabled {

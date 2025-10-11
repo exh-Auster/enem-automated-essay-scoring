@@ -9,6 +9,8 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
+    @AppStorage("needsOnboarding") var needsOnboarding = true
+    
     @State private var path = NavigationPath()
     
     var body: some View {
@@ -22,6 +24,9 @@ struct ContentView: View {
             Tab("Guia", systemImage: "text.book.closed") {
                 Text("WIP")
             }
+        }
+        .fullScreenCover(isPresented: $needsOnboarding) {
+            OnboardingView()
         }
     }
 }
