@@ -22,8 +22,11 @@ struct EssayListView: View {
     var body: some View {
         Group {
             if essays.isEmpty {
-                // TODO: copy
-                ContentUnavailableView("No essays", systemImage: "questionmark")
+                ContentUnavailableView {
+                    Label("Adicione sua primeira redação", systemImage: "list.bullet")
+                } description: {
+                    Text("Escolha um dos temas disponíveis das edições anteriores do Enem e comece a escrever.")
+                }
             } else {
                 List {
                     ForEach(essays) { essay in
