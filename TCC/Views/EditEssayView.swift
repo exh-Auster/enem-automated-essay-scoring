@@ -50,6 +50,9 @@ struct EditEssayView: View {
     
     @State private var expandedStates: [Bool]
     
+    @State private var isShowingMinLengthAlert = false
+    @State private var isShowingIncorrectLanguageAlert = false
+    
     @State private var isShowingReviewScreen = false
     
     @Binding var path: NavigationPath
@@ -129,7 +132,13 @@ struct EditEssayView: View {
             
             ToolbarItem(placement: .confirmationAction) {
                 Button {
-                    isShowingReviewScreen = true
+                    if !validateLength() {
+                        isShowingMinLengthAlert = true
+                    } else if !validateLanguage() {
+                        isShowingIncorrectLanguageAlert = true
+                    } else {
+                        isShowingReviewScreen = true
+                    }
                 } label: {
                     Label("Revisar", systemImage: "arrow.right")
                 }
@@ -137,6 +146,18 @@ struct EditEssayView: View {
                 .disabled(iteration.paragraphs.isEmpty)
             }
         }
+        .alert("Texto Muito Curto", isPresented: $isShowingMinLengthAlert) {
+            
+        } message: { // TODO: confirm and extract
+            Text("Os parágrafos da redação devem ter, no mínimo, 50 palavras cada. Verifique o texto e tente novamente.")
+        }
+        .alert("Idioma Não Reconhecido", isPresented: $isShowingIncorrectLanguageAlert) {
+            
+        } message: {
+            Text("A redação deve ser escrita em Português. Verifique o texto e tente novamente.")
+        }
+        .sensoryFeedback(.error, trigger: isShowingMinLengthAlert) { $1 }
+        .sensoryFeedback(.error, trigger: isShowingIncorrectLanguageAlert) { $1 }
     }
     
     private func addParagraph(at index: Int) {
