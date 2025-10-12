@@ -5,8 +5,9 @@
 //  Created by Felipe Ribeiro on 27/07/25.
 //
 
-import SwiftUI
+import NaturalLanguage
 import SwiftData
+import SwiftUI
 
 struct ExpandButton: View {
     @Binding var isExpanded: Bool
@@ -145,6 +146,24 @@ struct EditEssayView: View {
             iteration.paragraphs.remove(atOffsets: indexSet)
             expandedStates.remove(atOffsets: indexSet)
         }
+    }
+    
+    private func validateLength() -> Bool {
+        let minWordCount = 50 // TODO: confirm and extract
+        let wordCounts = iteration.paragraphs.map { $0.components(separatedBy: " ").count }
+        
+        guard wordCounts.allSatisfy({ $0 >= minWordCount }) else { return false }
+        
+        return true
+    }
+    
+    private func validateLanguage() -> Bool {
+        let recognizer = NLLanguageRecognizer()
+        recognizer.processString(iteration.fullText)
+        
+        guard let dominantLanguage = recognizer.dominantLanguage, dominantLanguage == .portuguese else { return false }
+        
+        return true
     }
 }
 
