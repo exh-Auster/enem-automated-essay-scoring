@@ -50,6 +50,8 @@ struct EditEssayView: View {
     
     @State private var expandedStates: [Bool]
     
+    @State private var isShowingReviewScreen = false
+    
     @Binding var path: NavigationPath
     
     init(iteration: EssayIteration, path: Binding<NavigationPath>) {
@@ -110,6 +112,9 @@ struct EditEssayView: View {
         .navigationTitle(iteration.essay?.topic?.title ?? "")
         .navigationSubtitle("Palavras: \(iteration.wordCount) | Parágrafos: \(iteration.paragraphCount)")
         .toolbarTitleDisplayMode(.inline)
+        .navigationDestination(isPresented: $isShowingReviewScreen) {
+            IterationReviewView(iteration: iteration, path: $path)
+        }
         .toolbar {
             if debugEnabled {
                 ToolbarItem(placement: .topBarLeading) {
@@ -123,10 +128,10 @@ struct EditEssayView: View {
             }
             
             ToolbarItem(placement: .confirmationAction) {
-                NavigationLink {
-                    IterationReviewView(iteration: iteration, path: $path)
+                Button {
+                    isShowingReviewScreen = true
                 } label: {
-                    Label("Submit", systemImage: "arrow.right")
+                    Label("Revisar", systemImage: "arrow.right")
                 }
                 // TODO: revisit approach
                 .disabled(iteration.paragraphs.isEmpty)
