@@ -57,18 +57,20 @@ struct OnboardingView: View {
     
     var body: some View {
         Group {
-            Text("Bem-vindo ao AES!")
+            Text("Boas-vindas ao AES!")
                 .font(.largeTitle)
                 .fontDesign(.serif)
                 .bold()
                 .padding()
+                .multilineTextAlignment(.center)
             
             ScrollView {
                 ForEach(cardContents.enumerated(), id: \.offset) { offset, element in
                     if currentCardIndex >= offset {
-                        OnboardingCard(systemImage: element.systemImage, title: element.title, content: element.content)
+                        OnboardingRow(systemImage: element.systemImage, title: element.title, content: element.content)
+                            .padding(.horizontal)
+                            .padding(.vertical, 10)
                     }
-                    
                 }
             }
             .scrollBounceBehavior(.basedOnSize)
@@ -85,25 +87,27 @@ struct OnboardingView: View {
 
 // MARK: - Subviews
 
-struct OnboardingCard: View {
+struct OnboardingRow: View {
     let systemImage: String
     let title: String
     let content: String
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Label(title, systemImage: systemImage)
+        HStack(alignment: .center, spacing: 16) {
+            Image(systemName: systemImage)
                 .font(.title)
-                .fontWeight(.semibold)
-                .fontDesign(.serif)
-                .labelIconToTitleSpacing(14)
+                .foregroundStyle(.blue)
             
-            Text(content)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.headline)
+                
+                Text(content)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .multilineTextAlignment(.leading)
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.ultraThickMaterial, in: .rect(corners: .concentric(minimum: .fixed(10))))
     }
 }
 
