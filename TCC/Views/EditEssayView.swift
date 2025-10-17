@@ -81,8 +81,8 @@ struct EditEssayView: View {
                     
                     ForEach($iteration.paragraphs.indices, id: \.self) { i in
                         Section(isExpanded: $expandedStates[i]) {
-                            TextEditor(text: $iteration.paragraphs[i])
-                                .frame(minHeight: 300) // TODO: make dynamic
+                            TextField("", text: $iteration.paragraphs[i], axis: .vertical)
+                                .lineLimit(7...)
                                 .contextMenu {
                                     Button("Apagar parágrafo", systemImage: "trash", role: .destructive) {
                                         removeParagraphs(at: IndexSet(integer: i))
