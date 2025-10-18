@@ -148,7 +148,9 @@ struct EditEssayView: View {
     }
 }
 
-#Preview {
+// MARK: - Previews
+
+#Preview("Populated") {
     @Previewable @State var isPresented = true
     @Previewable @State var path = NavigationPath()
     
@@ -162,3 +164,23 @@ struct EditEssayView: View {
     }
     .modelContainer(SampleData.shared.modelContainer)
 }
+
+#Preview("Empty") {
+    @Previewable @State var isPresented = true
+    @Previewable @State var path = NavigationPath()
+    
+    let iteration = EssayIteration(
+        essay: Essay(topic: Topic.topics.first!),
+        date: .now,
+        paragraphs: []
+    )
+    
+    NavigationStack {
+        Button(isPresented.description) { isPresented.toggle() }
+            .navigationDestination(isPresented: $isPresented) {
+                EditEssayView(iteration: iteration, path: $path)
+            }
+    }
+    .modelContainer(SampleData.shared.modelContainer)
+}
+
