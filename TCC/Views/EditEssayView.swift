@@ -8,39 +8,6 @@
 import SwiftUI
 import SwiftData
 
-struct ExpandButton: View {
-    @Binding var isExpanded: Bool
-
-    var body: some View {
-        Button(
-            isExpanded ? "Collapse" : "Expand",
-            systemImage: "chevron.down"
-        ) {
-            withAnimation {
-                isExpanded.toggle()
-            }
-        }
-        .labelStyle(.iconOnly)
-        .rotationEffect(isExpanded ? Angle(degrees: 0) : Angle(degrees: -90))
-//        .frame(width: 20, height: 20)
-    }
-}
-
-struct SectionHeader: View {
-    let title: String
-    @Binding var isExpanded: Bool
-    
-    var body: some View {
-        HStack {
-            Text(title)
-            
-            Spacer()
-            
-            ExpandButton(isExpanded: $isExpanded)
-        }
-    }
-}
-
 struct EditEssayView: View {
     @AppStorage("debugEnabled") var debugEnabled = false
     
@@ -144,6 +111,41 @@ struct EditEssayView: View {
         withAnimation {
             iteration.paragraphs.remove(atOffsets: indexSet)
             expandedStates.remove(atOffsets: indexSet)
+        }
+    }
+}
+
+// MARK: - Subviews
+
+struct ExpandButton: View {
+    @Binding var isExpanded: Bool
+
+    var body: some View {
+        Button(
+            isExpanded ? "Collapse" : "Expand",
+            systemImage: "chevron.down"
+        ) {
+            withAnimation {
+                isExpanded.toggle()
+            }
+        }
+        .labelStyle(.iconOnly)
+        .rotationEffect(isExpanded ? Angle(degrees: 0) : Angle(degrees: -90))
+//        .frame(width: 20, height: 20)
+    }
+}
+
+struct SectionHeader: View {
+    let title: String
+    @Binding var isExpanded: Bool
+    
+    var body: some View {
+        HStack {
+            Text(title)
+            
+            Spacer()
+            
+            ExpandButton(isExpanded: $isExpanded)
         }
     }
 }
