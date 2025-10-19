@@ -38,13 +38,27 @@ struct EditEssayView: View {
                     Text("A estrutura sugerida para a redação do ENEM é de quatro parágrafos: um de introdução, dois de desenvolvimento e um de conclusão.")
                 } actions: {
                     // TODO: extract & fix logic
-                    Button("Adicionar um parágrafo") { addParagraph(at: 0) }
-                        .buttonStyle(.bordered)
-                    Button("Adicionar quatro parágrafos") { for _ in 1...4 { addParagraph(at: 0) } }
-                        .buttonStyle(.borderedProminent)
-//                    Button("Adicionar cinco parágrafos") { for _ in 1...5 { addParagraph(at: 0) } }
-//                        .buttonStyle(.bordered)
+                    Button("Adicionar um parágrafo", systemImage: "1.circle") { addParagraph(at: 0) }
+                        .buttonStyle(.glass)
+                    
+                    Button("Adicionar quatro parágrafos", systemImage: "4.circle") { for _ in 1...4 { addParagraph(at: 0) } }
+                        .buttonStyle(.glassProminent)
+                    
+                    Menu("Importar...", systemImage: "plus") {
+                        Button {
+                            showingFileImporter = true
+                        } label: {
+                            Label("Importar de Arquivos", systemImage: "folder")
+                        }
+                        
+                        PasteButton(payloadType: String.self) { fullText in
+                            importedText = fullText[0]
+                            showingImportConfirmationSheet = true
+                        }
+                    }
+                    .buttonStyle(.glass)
                 }
+//                .buttonSizing(.flexible)
             } else {
                 Form {
                     //            Button("Adicionar parágrafo", systemImage: "plus") {
