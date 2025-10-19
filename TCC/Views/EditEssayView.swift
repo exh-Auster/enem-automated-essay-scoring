@@ -35,7 +35,7 @@ struct EditEssayView: View {
                 ContentUnavailableView {
                     Label("Adicione seu primeiro parágrafo", systemImage: "text.page")
                 } description: {
-                    Text("A estrutura sugerida para a redação do ENEM é de quatro parágrafos: um de introdução, dois de desenvolvimento e um de conclusão.")
+                    Text("A estrutura sugerida para a redação do ENEM é de quatro parágrafos: um de introdução, dois de desenvolvimento e um de conclusão. Você pode adicionar ou remover parágrafos a qualquer momento.")
                 } actions: {
                     // TODO: extract & fix logic
                     Button("Adicionar um parágrafo", systemImage: "1.circle") { addParagraph(at: 0) }
