@@ -7,39 +7,7 @@
 
 import SwiftUI
 import SwiftData
-
-struct ExpandButton: View {
-    @Binding var isExpanded: Bool
-
-    var body: some View {
-        Button(
-            isExpanded ? "Collapse" : "Expand",
-            systemImage: "chevron.down"
-        ) {
-            withAnimation {
-                isExpanded.toggle()
-            }
-        }
-        .labelStyle(.iconOnly)
-        .rotationEffect(isExpanded ? Angle(degrees: 0) : Angle(degrees: -90))
-//        .frame(width: 20, height: 20)
-    }
-}
-
-struct SectionHeader: View {
-    let title: String
-    @Binding var isExpanded: Bool
-    
-    var body: some View {
-        HStack {
-            Text(title)
-            
-            Spacer()
-            
-            ExpandButton(isExpanded: $isExpanded)
-        }
-    }
-}
+import UniformTypeIdentifiers
 
 struct EditEssayView: View {
     @AppStorage("debugEnabled") var debugEnabled = false
@@ -49,11 +17,17 @@ struct EditEssayView: View {
     
     @State private var expandedStates: [Bool]
     
+    @State private var importedText: String = ""
+    @State private var showingFileImporter = false
+    @State private var showingImportConfirmationSheet = false
+    
     @Binding var path: NavigationPath
     
     init(iteration: EssayIteration, path: Binding<NavigationPath>) {
         self.iteration = iteration
-        self.expandedStates = Array(repeating: true, count: iteration.paragraphCount)
+        
+        // TODO: fix fixed initial count value
+        self.expandedStates = Array(repeating: true, count: 1000)
         self._path = path
     }
     
@@ -63,16 +37,30 @@ struct EditEssayView: View {
                 ContentUnavailableView {
                     Label("Adicione seu primeiro parágrafo", systemImage: "text.page")
                 } description: {
-                    Text("A estrutura sugerida para a redação do ENEM é de quatro parágrafos: um de introdução, dois de desenvolvimento e um de conclusão.")
+                    Text("A estrutura sugerida para a redação do ENEM é de quatro parágrafos: um de introdução, dois de desenvolvimento e um de conclusão. Você pode adicionar ou remover parágrafos a qualquer momento.")
                 } actions: {
                     // TODO: extract & fix logic
-                    Button("Adicionar um parágrafo") { addParagraph(at: 0) }
-                        .buttonStyle(.bordered)
-                    Button("Adicionar quatro parágrafos") { for _ in 1...4 { addParagraph(at: 0) } }
-                        .buttonStyle(.borderedProminent)
-//                    Button("Adicionar cinco parágrafos") { for _ in 1...5 { addParagraph(at: 0) } }
-//                        .buttonStyle(.bordered)
+                    Button("Adicionar um parágrafo", systemImage: "1.circle") { addParagraph(at: 0) }
+                        .buttonStyle(.glass)
+                    
+                    Button("Adicionar quatro parágrafos", systemImage: "4.circle") { for _ in 1...4 { addParagraph(at: 0) } }
+                        .buttonStyle(.glassProminent)
+                    
+                    Menu("Importar...", systemImage: "plus") {
+                        Button {
+                            showingFileImporter = true
+                        } label: {
+                            Label("Importar de Arquivos", systemImage: "folder")
+                        }
+                        
+                        PasteButton(payloadType: String.self) { fullText in
+                            importedText = fullText[0]
+                            showingImportConfirmationSheet = true
+                        }
+                    }
+                    .buttonStyle(.glass)
                 }
+//                .buttonSizing(.flexible)
             } else {
                 Form {
                     //            Button("Adicionar parágrafo", systemImage: "plus") {
@@ -131,6 +119,23 @@ struct EditEssayView: View {
                 .disabled(iteration.paragraphs.isEmpty)
             }
         }
+        .fileImporter(isPresented: $showingFileImporter, allowedContentTypes: [.plainText]) { result in
+            switch result {
+            case .success(let fileUrl):
+                do {
+                    try importedText = decodeTextFile(from: fileUrl)
+                } catch {
+                    print(error.localizedDescription)
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+        .sheet(isPresented: $showingImportConfirmationSheet) {
+            applyImportedText()
+        } content: {
+            ImportConfirmationView(iteration: iteration, importedText: $importedText)
+        }
     }
     
     private func addParagraph(at index: Int) {
@@ -146,9 +151,68 @@ struct EditEssayView: View {
             expandedStates.remove(atOffsets: indexSet)
         }
     }
+    
+    private func decodeTextFile(from fileURL: URL) throws -> String {
+        let didStartAccessing = fileURL.startAccessingSecurityScopedResource()
+        
+        defer {
+            if didStartAccessing {
+                fileURL.stopAccessingSecurityScopedResource()
+            }
+        }
+        
+        return try String(contentsOf: fileURL, encoding: .utf8)
+    }
+    
+    private func applyImportedText() {
+        guard !importedText.isEmpty else { return }
+        
+        withAnimation {
+            iteration.fullText = importedText
+        }
+            
+        importedText = ""
+    }
 }
 
-#Preview {
+// MARK: - Subviews
+
+struct ExpandButton: View {
+    @Binding var isExpanded: Bool
+
+    var body: some View {
+        Button(
+            isExpanded ? "Collapse" : "Expand",
+            systemImage: "chevron.down"
+        ) {
+            withAnimation {
+                isExpanded.toggle()
+            }
+        }
+        .labelStyle(.iconOnly)
+        .rotationEffect(isExpanded ? Angle(degrees: 0) : Angle(degrees: -90))
+//        .frame(width: 20, height: 20)
+    }
+}
+
+struct SectionHeader: View {
+    let title: String
+    @Binding var isExpanded: Bool
+    
+    var body: some View {
+        HStack {
+            Text(title)
+            
+            Spacer()
+            
+            ExpandButton(isExpanded: $isExpanded)
+        }
+    }
+}
+
+// MARK: - Previews
+
+#Preview("Populated") {
     @Previewable @State var isPresented = true
     @Previewable @State var path = NavigationPath()
     
@@ -162,3 +226,23 @@ struct EditEssayView: View {
     }
     .modelContainer(SampleData.shared.modelContainer)
 }
+
+#Preview("Empty") {
+    @Previewable @State var isPresented = true
+    @Previewable @State var path = NavigationPath()
+    
+    let iteration = EssayIteration(
+        essay: Essay(topic: Topic.topics.first!),
+        date: .now,
+        paragraphs: []
+    )
+    
+    NavigationStack {
+        Button(isPresented.description) { isPresented.toggle() }
+            .navigationDestination(isPresented: $isPresented) {
+                EditEssayView(iteration: iteration, path: $path)
+            }
+    }
+    .modelContainer(SampleData.shared.modelContainer)
+}
+
