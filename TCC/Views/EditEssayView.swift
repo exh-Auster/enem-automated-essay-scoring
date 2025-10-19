@@ -16,6 +16,9 @@ struct EditEssayView: View {
     
     @State private var expandedStates: [Bool]
     
+    @State private var importedText: String = ""
+    @State private var showingImportConfirmationSheet = false
+    
     @Binding var path: NavigationPath
     
     init(iteration: EssayIteration, path: Binding<NavigationPath>) {
@@ -98,6 +101,11 @@ struct EditEssayView: View {
                 .disabled(iteration.paragraphs.isEmpty)
             }
         }
+        .sheet(isPresented: $showingImportConfirmationSheet) {
+            applyImportedText()
+        } content: {
+            ImportConfirmationView(iteration: iteration, importedText: $importedText)
+        }
     }
     
     private func addParagraph(at index: Int) {
@@ -112,6 +120,16 @@ struct EditEssayView: View {
             iteration.paragraphs.remove(atOffsets: indexSet)
             expandedStates.remove(atOffsets: indexSet)
         }
+    }
+    
+    private func applyImportedText() {
+        guard !importedText.isEmpty else { return }
+        
+        withAnimation {
+            iteration.fullText = importedText
+        }
+            
+        importedText = ""
     }
 }
 
