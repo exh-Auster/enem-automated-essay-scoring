@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import UniformTypeIdentifiers
 
 struct EditEssayView: View {
     @AppStorage("debugEnabled") var debugEnabled = false
@@ -17,6 +18,7 @@ struct EditEssayView: View {
     @State private var expandedStates: [Bool]
     
     @State private var importedText: String = ""
+    @State private var showingFileImporter = false
     @State private var showingImportConfirmationSheet = false
     
     @Binding var path: NavigationPath
@@ -101,6 +103,18 @@ struct EditEssayView: View {
                 .disabled(iteration.paragraphs.isEmpty)
             }
         }
+        .fileImporter(isPresented: $showingFileImporter, allowedContentTypes: [.plainText]) { result in
+            switch result {
+            case .success(let fileUrl):
+                do {
+                    try importedText = decodeTextFile(from: fileUrl)
+                } catch {
+                    print(error.localizedDescription)
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
         .sheet(isPresented: $showingImportConfirmationSheet) {
             applyImportedText()
         } content: {
@@ -120,6 +134,18 @@ struct EditEssayView: View {
             iteration.paragraphs.remove(atOffsets: indexSet)
             expandedStates.remove(atOffsets: indexSet)
         }
+    }
+    
+    private func decodeTextFile(from fileURL: URL) throws -> String {
+        let didStartAccessing = fileURL.startAccessingSecurityScopedResource()
+        
+        defer {
+            if didStartAccessing {
+                fileURL.stopAccessingSecurityScopedResource()
+            }
+        }
+        
+        return try String(contentsOf: fileURL, encoding: .utf8)
     }
     
     private func applyImportedText() {
