@@ -25,7 +25,9 @@ struct EditEssayView: View {
     
     init(iteration: EssayIteration, path: Binding<NavigationPath>) {
         self.iteration = iteration
-        self.expandedStates = Array(repeating: true, count: iteration.paragraphCount)
+        
+        // TODO: fix fixed initial count value
+        self.expandedStates = Array(repeating: true, count: 1000)
         self._path = path
     }
     
