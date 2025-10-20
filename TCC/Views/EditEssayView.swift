@@ -195,6 +195,8 @@ struct EditEssayView: View {
         guard let dominantLanguage = recognizer.dominantLanguage, dominantLanguage == .portuguese else { return false }
         
         return true
+    }
+    
     private func decodeTextFile(from fileURL: URL) throws -> String {
         let didStartAccessing = fileURL.startAccessingSecurityScopedResource()
         
