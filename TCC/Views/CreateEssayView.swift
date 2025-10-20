@@ -82,8 +82,11 @@ struct CreateEssayView: View {
 }
 
 #Preview {
-    NavigationStack {
-        CreateEssayView()
-            .modelContainer(SampleData.shared.modelContainer)
-    }
+    Text("CreateEssayView preview")
+        .sheet(isPresented: .constant(true)) {
+            NavigationStack {
+                CreateEssayView()
+                    .modelContainer(SampleData.shared.modelContainer)
+            }
+        }
 }
