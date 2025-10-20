@@ -13,9 +13,6 @@ struct CreateEssayView: View {
     
     @State private var newEssay: Essay?
     
-    @State private var customTopicName = ""
-    @State private var customTopicSource = ""
-    
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
     
@@ -36,24 +33,7 @@ struct CreateEssayView: View {
                 )
             case false:
                 List {
-                    Section {
-                        TextField("Tema", text: $customTopicName)
-                        TextField("Origem (opcional)", text: $customTopicSource)
-                    }
-                    .sectionActions {
-                        Button("Salvar") {
-                            let source = customTopicSource.isEmpty ? nil : customTopicSource
-                            let customTopic = Topic(title: customTopicName, source: source)
-                            
-                            customTopicName = ""
-                            customTopicSource = ""
-                            
-                            createEssay(topic: customTopic)
-                            dismiss()
-                        }
-                    }
-                    
-                    Section("Sugeridos") {
+                    Section("Temas disponíveis") {
                         ForEach(availableTopics) { topic in
                             Button {
                                 createEssay(topic: topic)
@@ -68,7 +48,7 @@ struct CreateEssayView: View {
             }
         }
         .navigationTitle("Nova redação")
-//        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(item: $newEssay) { Text($0.topic?.title ?? "")
         }
     }
