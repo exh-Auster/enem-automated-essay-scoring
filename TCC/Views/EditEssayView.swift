@@ -5,8 +5,9 @@
 //  Created by Felipe Ribeiro on 27/07/25.
 //
 
-import SwiftUI
+import NaturalLanguage
 import SwiftData
+import SwiftUI
 import UniformTypeIdentifiers
 
 struct EditEssayView: View {
@@ -17,9 +18,14 @@ struct EditEssayView: View {
     
     @State private var expandedStates: [Bool]
     
+    @State private var isShowingMinLengthAlert = false
+    @State private var isShowingIncorrectLanguageAlert = false
+    
+    @State private var isShowingReviewScreen = false
+  
     @State private var importedText: String = ""
-    @State private var showingFileImporter = false
-    @State private var showingImportConfirmationSheet = false
+    @State private var isShowingFileImporter = false
+    @State private var isShowingImportConfirmationSheet = false
     
     @Binding var path: NavigationPath
     
@@ -48,14 +54,14 @@ struct EditEssayView: View {
                     
                     Menu("Importar...", systemImage: "plus") {
                         Button {
-                            showingFileImporter = true
+                            isShowingFileImporter = true
                         } label: {
                             Label("Importar de Arquivos", systemImage: "folder")
                         }
                         
                         PasteButton(payloadType: String.self) { fullText in
                             importedText = fullText[0]
-                            showingImportConfirmationSheet = true
+                            isShowingImportConfirmationSheet = true
                         }
                     }
                     .buttonStyle(.glass)
@@ -97,6 +103,9 @@ struct EditEssayView: View {
         .navigationTitle(iteration.essay?.topic?.title ?? "")
         .navigationSubtitle("Palavras: \(iteration.wordCount) | Parágrafos: \(iteration.paragraphCount)")
         .toolbarTitleDisplayMode(.inline)
+        .navigationDestination(isPresented: $isShowingReviewScreen) {
+            IterationReviewView(iteration: iteration, path: $path)
+        }
         .toolbar {
             if debugEnabled {
                 ToolbarItem(placement: .topBarLeading) {
@@ -110,16 +119,34 @@ struct EditEssayView: View {
             }
             
             ToolbarItem(placement: .confirmationAction) {
-                NavigationLink {
-                    IterationReviewView(iteration: iteration, path: $path)
+                Button {
+                    if !validateLength() {
+                        isShowingMinLengthAlert = true
+                    } else if !validateLanguage() {
+                        isShowingIncorrectLanguageAlert = true
+                    } else {
+                        isShowingReviewScreen = true
+                    }
                 } label: {
-                    Label("Submit", systemImage: "arrow.right")
+                    Label("Revisar", systemImage: "arrow.right")
                 }
                 // TODO: revisit approach
                 .disabled(iteration.paragraphs.isEmpty)
             }
         }
-        .fileImporter(isPresented: $showingFileImporter, allowedContentTypes: [.plainText]) { result in
+        .alert("Texto Muito Curto", isPresented: $isShowingMinLengthAlert) {
+            
+        } message: { // TODO: confirm and extract
+            Text("Os parágrafos da redação devem ter, no mínimo, 50 palavras cada. Verifique o texto e tente novamente.")
+        }
+        .alert("Idioma Não Reconhecido", isPresented: $isShowingIncorrectLanguageAlert) {
+            
+        } message: {
+            Text("A redação deve ser escrita em Português. Verifique o texto e tente novamente.")
+        }
+        .sensoryFeedback(.error, trigger: isShowingMinLengthAlert) { $1 }
+        .sensoryFeedback(.error, trigger: isShowingIncorrectLanguageAlert) { $1 }
+        .fileImporter(isPresented: $isShowingFileImporter, allowedContentTypes: [.plainText]) { result in
             switch result {
             case .success(let fileUrl):
                 do {
@@ -131,7 +158,7 @@ struct EditEssayView: View {
                 print(error.localizedDescription)
             }
         }
-        .sheet(isPresented: $showingImportConfirmationSheet) {
+        .sheet(isPresented: $isShowingImportConfirmationSheet) {
             applyImportedText()
         } content: {
             ImportConfirmationView(iteration: iteration, importedText: $importedText)
@@ -152,6 +179,22 @@ struct EditEssayView: View {
         }
     }
     
+    private func validateLength() -> Bool {
+        let minWordCount = 50 // TODO: confirm and extract
+        let wordCounts = iteration.paragraphs.map { $0.components(separatedBy: " ").count }
+        
+        guard wordCounts.allSatisfy({ $0 >= minWordCount }) else { return false }
+        
+        return true
+    }
+    
+    private func validateLanguage() -> Bool {
+        let recognizer = NLLanguageRecognizer()
+        recognizer.processString(iteration.fullText)
+        
+        guard let dominantLanguage = recognizer.dominantLanguage, dominantLanguage == .portuguese else { return false }
+        
+        return true
     private func decodeTextFile(from fileURL: URL) throws -> String {
         let didStartAccessing = fileURL.startAccessingSecurityScopedResource()
         
