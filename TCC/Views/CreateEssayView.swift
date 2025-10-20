@@ -26,33 +26,44 @@ struct CreateEssayView: View {
     }
     
     var body: some View {
-        List {
-            Section {
-                TextField("Tema", text: $customTopicName)
-                TextField("Origem (opcional)", text: $customTopicSource)
-            }
-            .sectionActions {
-                Button("Salvar") {
-                    let source = customTopicSource.isEmpty ? nil : customTopicSource
-                    let customTopic = Topic(title: customTopicName, source: source)
-                    
-                    customTopicName = ""
-                    customTopicSource = ""
-                    
-                    createEssay(topic: customTopic)
-                    dismiss()
-                }
-            }
-            
-            Section("Sugeridos") {
-                ForEach(availableTopics) { topic in
-                    Button {
-                        createEssay(topic: topic)
-                        dismiss()
-                    } label: {
-                        TopicRowView(topic: topic)
+        Group {
+            switch availableTopics.isEmpty {
+            case true:
+                ContentUnavailableView(
+                    "Sem temas disponíveis",
+                    systemImage: "tray",
+                    description: Text("Você adicionou todos os temas de redação.\nPara criar uma nova iteração, abra um tema e toque no botão \(Image(systemName: "plus.circle")).")
+                )
+            case false:
+                List {
+                    Section {
+                        TextField("Tema", text: $customTopicName)
+                        TextField("Origem (opcional)", text: $customTopicSource)
                     }
-                    .buttonStyle(.plain)
+                    .sectionActions {
+                        Button("Salvar") {
+                            let source = customTopicSource.isEmpty ? nil : customTopicSource
+                            let customTopic = Topic(title: customTopicName, source: source)
+                            
+                            customTopicName = ""
+                            customTopicSource = ""
+                            
+                            createEssay(topic: customTopic)
+                            dismiss()
+                        }
+                    }
+                    
+                    Section("Sugeridos") {
+                        ForEach(availableTopics) { topic in
+                            Button {
+                                createEssay(topic: topic)
+                                dismiss()
+                            } label: {
+                                TopicRowView(topic: topic)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
                 }
             }
         }
