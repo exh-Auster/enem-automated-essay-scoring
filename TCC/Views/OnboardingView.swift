@@ -14,9 +14,14 @@ struct OnboardingView: View {
     
     let cardContents: [(systemImage: String, title: String, content: String)] = [
         (
-            "checkmark.circle",
+            "list.bullet",
             "Escolha um tema",
             "Você pode praticar com diversos temas das últimas edições da prova do Enem."
+        ),
+        (
+            "circle.dotted.and.circle",
+            "Crie sua primeira iteração",
+            "Cada iteração representa uma tentativa de desenvolver uma redação em um determinado tema."
         ),
         (
             "pencil",
@@ -31,7 +36,7 @@ struct OnboardingView: View {
         (
             "arrow.trianglehead.2.counterclockwise.rotate.90",
             "Continue a praticar",
-            "Itere a partir de tentativas anteriores, ou comece uma nova redação a partir de qualquer tema disponível."
+            "Aprimore iterações anteriores, ou comece uma nova redação sobre qualquer tema disponível."
         ),
     ]
     
