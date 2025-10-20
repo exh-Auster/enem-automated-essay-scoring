@@ -51,6 +51,11 @@ struct CreateEssayView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(item: $newEssay) { Text($0.topic?.title ?? "")
         }
+        .toolbar {
+            Button(role: .cancel) {
+                dismiss()
+            }
+        }
     }
     
     private func createEssay(topic: Topic) {
