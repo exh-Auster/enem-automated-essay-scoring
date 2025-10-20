@@ -35,26 +35,6 @@ struct OnboardingView: View {
         ),
     ]
     
-    @ViewBuilder
-    private var bottomButton: some View {
-        let isLastCard = currentCardIndex >= cardContents.count - 1
-        
-        Button {
-            withAnimation {
-                if isLastCard {
-                    needsOnboarding = false
-                } else {
-                    currentCardIndex += 1
-                }
-            }
-        } label: {
-            Text(isLastCard ? "Começar" : "Avançar")
-                .padding(.vertical, 10)
-        }
-        .buttonStyle(.glassProminent)
-        .buttonSizing(.flexible)
-    }
-    
     var body: some View {
         Group {
             Text("Boas-vindas ao AES!")
@@ -82,6 +62,26 @@ struct OnboardingView: View {
         .padding(.horizontal)
         .sensoryFeedback(.increase, trigger: currentCardIndex)
         .sensoryFeedback(.success, trigger: needsOnboarding) { !$1 }
+    }
+    
+    // MARK: - ViewBuilders
+    
+    @ViewBuilder
+    private var bottomButton: some View {
+        let isLastCard = currentCardIndex >= cardContents.count - 1
+        
+        Button {
+            withAnimation {
+                if isLastCard {
+                    needsOnboarding = false
+                }
+            }
+        } label: {
+            Text("Começar")
+                .padding(.vertical, 10)
+        }
+        .buttonStyle(.glassProminent)
+        .buttonSizing(.flexible)
     }
 }
 
