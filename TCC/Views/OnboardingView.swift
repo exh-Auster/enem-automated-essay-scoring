@@ -14,9 +14,14 @@ struct OnboardingView: View {
     
     let cardContents: [(systemImage: String, title: String, content: String)] = [
         (
-            "checkmark.circle",
+            "list.bullet",
             "Escolha um tema",
             "Você pode praticar com diversos temas das últimas edições da prova do Enem."
+        ),
+        (
+            "circle.dotted.and.circle",
+            "Crie sua primeira iteração",
+            "Cada iteração representa uma tentativa de desenvolver uma redação em um determinado tema."
         ),
         (
             "pencil",
@@ -31,37 +36,19 @@ struct OnboardingView: View {
         (
             "arrow.trianglehead.2.counterclockwise.rotate.90",
             "Continue a praticar",
-            "Itere a partir de tentativas anteriores, ou comece uma nova redação a partir de qualquer tema disponível."
+            "Aprimore iterações anteriores, ou comece uma nova redação sobre qualquer tema disponível."
         ),
     ]
-    
-    @ViewBuilder
-    private var bottomButton: some View {
-        let isLastCard = currentCardIndex >= cardContents.count - 1
-        
-        Button {
-            withAnimation {
-                if isLastCard {
-                    needsOnboarding = false
-                } else {
-                    currentCardIndex += 1
-                }
-            }
-        } label: {
-            Text(isLastCard ? "Começar" : "Avançar")
-                .padding(.vertical, 10)
-        }
-        .buttonStyle(.glassProminent)
-        .buttonSizing(.flexible)
-    }
     
     var body: some View {
         Group {
             Text("Boas-vindas ao AES!")
                 .font(.largeTitle)
                 .fontDesign(.serif)
+                .fontWeight(.medium)
                 .bold()
                 .padding()
+                .padding(.top)
                 .multilineTextAlignment(.center)
             
             ScrollView {
@@ -77,11 +64,45 @@ struct OnboardingView: View {
             
             Spacer()
             
-            bottomButton
+            if currentCardIndex >= cardContents.count {
+                bottomButton
+                    .padding(.bottom)
+            }
         }
         .padding(.horizontal)
         .sensoryFeedback(.increase, trigger: currentCardIndex)
         .sensoryFeedback(.success, trigger: needsOnboarding) { !$1 }
+        .task {
+            let stepDelay: Duration = .seconds(0.4)
+            let rowAnimationDuration: TimeInterval = 0.9
+            
+            for index in 1...cardContents.count {
+                try? await Task.sleep(for: stepDelay)
+                withAnimation(.smooth(duration: rowAnimationDuration)) {
+                    currentCardIndex = index
+                }
+            }
+        }
+    }
+    
+    // MARK: - ViewBuilders
+    
+    @ViewBuilder
+    private var bottomButton: some View {
+        let isLastCard = currentCardIndex >= cardContents.count - 1
+        
+        Button {
+            withAnimation {
+                if isLastCard {
+                    needsOnboarding = false
+                }
+            }
+        } label: {
+            Text("Começar")
+                .padding(.vertical, 10)
+        }
+        .buttonStyle(.glassProminent)
+        .buttonSizing(.flexible)
     }
 }
 
@@ -97,9 +118,11 @@ struct OnboardingRow: View {
             Image(systemName: systemImage)
                 .font(.title)
                 .foregroundStyle(.blue)
+                .frame(width: 36, alignment: .center)
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
+//                    .fontDesign(.serif)
                     .font(.headline)
                 
                 Text(content)
