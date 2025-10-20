@@ -45,8 +45,10 @@ struct OnboardingView: View {
             Text("Boas-vindas ao AES!")
                 .font(.largeTitle)
                 .fontDesign(.serif)
+                .fontWeight(.medium)
                 .bold()
                 .padding()
+                .padding(.top)
                 .multilineTextAlignment(.center)
             
             ScrollView {
@@ -62,11 +64,25 @@ struct OnboardingView: View {
             
             Spacer()
             
-            bottomButton
+            if currentCardIndex >= cardContents.count {
+                bottomButton
+                    .padding(.bottom)
+            }
         }
         .padding(.horizontal)
         .sensoryFeedback(.increase, trigger: currentCardIndex)
         .sensoryFeedback(.success, trigger: needsOnboarding) { !$1 }
+        .task {
+            let stepDelay: Duration = .seconds(0.4)
+            let rowAnimationDuration: TimeInterval = 0.9
+            
+            for index in 1...cardContents.count {
+                try? await Task.sleep(for: stepDelay)
+                withAnimation(.smooth(duration: rowAnimationDuration)) {
+                    currentCardIndex = index
+                }
+            }
+        }
     }
     
     // MARK: - ViewBuilders
@@ -102,9 +118,11 @@ struct OnboardingRow: View {
             Image(systemName: systemImage)
                 .font(.title)
                 .foregroundStyle(.blue)
+                .frame(width: 36, alignment: .center)
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
+//                    .fontDesign(.serif)
                     .font(.headline)
                 
                 Text(content)
