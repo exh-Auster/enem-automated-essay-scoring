@@ -73,9 +73,9 @@ struct EditEssayView: View {
                     //                addParagraph(at: 0)
                     //            }
                     
-                    ForEach($iteration.paragraphs.indices, id: \.self) { i in
+                    ForEach($iteration.paragraphs.enumerated(), id: \.offset) { i, $paragraph in
                         Section(isExpanded: $expandedStates[i]) {
-                            TextField("", text: $iteration.paragraphs[i], axis: .vertical)
+                            TextField("", text: $paragraph, axis: .vertical)
                                 .lineLimit(7...)
                                 .contextMenu {
                                     Button("Apagar parágrafo", systemImage: "trash", role: .destructive) {
