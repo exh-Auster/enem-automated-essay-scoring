@@ -49,7 +49,9 @@ extension EssayIteration {
         paragraphs.count
     }
     
-    func getWordCountForParagraph(at index: Int) -> Int {
+    func getWordCountForParagraph(at index: Int) -> Int? {
+        guard index < paragraphs.count else { return nil }
+        
         return paragraphs[index].components(separatedBy: .whitespacesAndNewlines).filter { !$0.isEmpty }.count
     }
 }
