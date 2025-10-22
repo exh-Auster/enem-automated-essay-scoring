@@ -33,8 +33,7 @@ extension EssayIteration {
         }
         
         set {
-            // FIXME: separate by any number of new lines
-            paragraphs = newValue.components(separatedBy: "\n\n")
+            paragraphs = newValue.components(separatedBy: .newlines).filter({ !$0.isEmpty })
         }
     }
     
