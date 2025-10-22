@@ -37,11 +37,6 @@ struct EditEssayView: View {
         self._path = path
     }
     
-    private var paragraphWordCounts: [Int] {
-        iteration.paragraphs.indices.map { iteration.getWordCountForParagraph(at: $0)
-        }
-    }
-    
     var body: some View {
         Group {
             if iteration.paragraphs.isEmpty {
@@ -92,7 +87,7 @@ struct EditEssayView: View {
                                 addParagraph(at: i + 1)
                             }
                         } header: {
-                            SectionHeader(title: "Parágrafo \(i + 1) (\(paragraphWordCounts[i]) palavras)",
+                            SectionHeader(title: "Parágrafo \(i + 1) (\(iteration.getWordCountForParagraph(at: i) ?? 0) palavras)",
                                 isExpanded: $expandedStates[i]
                             )
                         }
