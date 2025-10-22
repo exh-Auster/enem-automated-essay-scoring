@@ -150,6 +150,7 @@ struct EditEssayView: View {
             case .success(let fileUrl):
                 do {
                     try importedText = decodeTextFile(from: fileUrl)
+                    isShowingImportConfirmationSheet = true
                 } catch {
                     print(error.localizedDescription)
                 }
