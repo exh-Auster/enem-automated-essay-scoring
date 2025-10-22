@@ -38,14 +38,19 @@ extension EssayIteration {
         }
     }
     
-    // FIXME: value zero
     var wordCount: Int {
-        fullText.components(separatedBy: " ").count
+        fullText
+            .components(separatedBy: .whitespacesAndNewlines)
+            .filter { !$0.isEmpty }
+            .count
     }
     
-    // FIXME: value zero
     var paragraphCount: Int {
-        fullText.count { $0.isNewline } / 2 + 1
+        paragraphs.count
+    }
+    
+    func getWordCountForParagraph(at index: Int) -> Int {
+        return paragraphs[index].components(separatedBy: .whitespacesAndNewlines).filter { !$0.isEmpty }.count
     }
 }
 
