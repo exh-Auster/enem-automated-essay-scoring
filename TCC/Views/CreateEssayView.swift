@@ -13,9 +13,6 @@ struct CreateEssayView: View {
     
     @State private var newEssay: Essay?
     
-    @State private var customTopicName = ""
-    @State private var customTopicSource = ""
-    
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
     
@@ -26,39 +23,38 @@ struct CreateEssayView: View {
     }
     
     var body: some View {
-        List {
-            Section {
-                TextField("Tema", text: $customTopicName)
-                TextField("Origem (opcional)", text: $customTopicSource)
-            }
-            .sectionActions {
-                Button("Salvar") {
-                    let source = customTopicSource.isEmpty ? nil : customTopicSource
-                    let customTopic = Topic(title: customTopicName, source: source)
-                    
-                    customTopicName = ""
-                    customTopicSource = ""
-                    
-                    createEssay(topic: customTopic)
-                    dismiss()
-                }
-            }
-            
-            Section("Sugeridos") {
-                ForEach(availableTopics) { topic in
-                    Button {
-                        createEssay(topic: topic)
-                        dismiss()
-                    } label: {
-                        TopicRowView(topic: topic)
+        Group {
+            switch availableTopics.isEmpty {
+            case true:
+                ContentUnavailableView(
+                    "Sem temas disponíveis",
+                    systemImage: "tray",
+                    description: Text("Você adicionou todos os temas de redação.\nPara criar uma nova iteração, abra um tema e toque no botão \(Image(systemName: "plus.circle")).")
+                )
+            case false:
+                List {
+                    Section("Temas disponíveis") {
+                        ForEach(availableTopics) { topic in
+                            Button {
+                                createEssay(topic: topic)
+                                dismiss()
+                            } label: {
+                                TopicRowView(topic: topic)
+                            }
+                            .buttonStyle(.plain)
+                        }
                     }
-                    .buttonStyle(.plain)
                 }
             }
         }
         .navigationTitle("Nova redação")
-//        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(item: $newEssay) { Text($0.topic?.title ?? "")
+        }
+        .toolbar {
+            Button(role: .cancel) {
+                dismiss()
+            }
         }
     }
     
@@ -71,8 +67,11 @@ struct CreateEssayView: View {
 }
 
 #Preview {
-    NavigationStack {
-        CreateEssayView()
-            .modelContainer(SampleData.shared.modelContainer)
-    }
+    Text("CreateEssayView preview")
+        .sheet(isPresented: .constant(true)) {
+            NavigationStack {
+                CreateEssayView()
+                    .modelContainer(SampleData.shared.modelContainer)
+            }
+        }
 }
