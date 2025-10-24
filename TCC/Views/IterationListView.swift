@@ -17,7 +17,20 @@ struct IterationListView: View {
     var body: some View {
         Group {
             if essay.iterations.isEmpty {
-                ContentUnavailableView("Adicione sua primeira iteração", systemImage: "text.badge.plus", description: Text("Você pode ter apenas uma iteração em andamento para cada tema de redação. Após a submissão e avaliação, você poderá iniciar uma nova iteração."))
+                ContentUnavailableView {
+                    Label("Adicione sua primeira iteração", systemImage: "text.badge.plus")
+                } description: {
+                    Text("Você pode ter apenas uma iteração em andamento para cada tema de redação. Após a submissão e avaliação, você poderá iniciar uma nova iteração.")
+                } actions: {
+                    Button {
+                        withAnimation {
+                            createIteration(for: essay)
+                        }
+                    } label: {
+                        Label("Adicionar iteração", systemImage: "plus")
+                    }
+                    .buttonStyle(.glassProminent)
+                }
             } else {
                 List {
                     if !essay.iterations.filter( { !$0.isCompleted } ).isEmpty {
@@ -90,7 +103,7 @@ struct IterationListView: View {
     }
 }
 
-#Preview {
+#Preview("Populated") {
     @Previewable @State var path = NavigationPath()
     // TODO: fix preview data
     
@@ -110,5 +123,15 @@ struct IterationListView: View {
         IterationListView(essay: essay, path: $path)
             .modelContainer(SampleData.shared.modelContainer)
     }
-    .preferredColorScheme(.dark)
+}
+
+#Preview("Empty") {
+    @Previewable @State var path = NavigationPath()
+    
+    let essay = Essay(topic: Topic.topics.first!)
+    
+    NavigationStack {
+        IterationListView(essay: essay, path: $path)
+            .modelContainer(SampleData.shared.modelContainer)
+    }
 }

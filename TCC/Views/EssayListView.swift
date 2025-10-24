@@ -26,6 +26,13 @@ struct EssayListView: View {
                     Label("Adicione sua primeira redação", systemImage: "list.bullet")
                 } description: {
                     Text("Escolha um dos temas disponíveis das edições anteriores do Enem e comece a escrever.")
+                } actions: {
+                    Button {
+                        showingCreateEssaySheet = true
+                    } label: {
+                        Label("Adicionar redação", systemImage: "plus")
+                    }
+                    .buttonStyle(.glassProminent)
                 }
             } else {
                 List {
