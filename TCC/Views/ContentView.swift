@@ -22,7 +22,7 @@ struct ContentView: View {
             }
             
             Tab("Guia", systemImage: "text.book.closed") {
-                Text("WIP")
+                GuideView()
             }
         }
         .fullScreenCover(isPresented: $needsOnboarding) {
