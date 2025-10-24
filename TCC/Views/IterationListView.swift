@@ -90,7 +90,7 @@ struct IterationListView: View {
     }
 }
 
-#Preview {
+#Preview("Populated") {
     @Previewable @State var path = NavigationPath()
     // TODO: fix preview data
     
@@ -110,5 +110,15 @@ struct IterationListView: View {
         IterationListView(essay: essay, path: $path)
             .modelContainer(SampleData.shared.modelContainer)
     }
-    .preferredColorScheme(.dark)
+}
+
+#Preview("Empty") {
+    @Previewable @State var path = NavigationPath()
+    
+    let essay = Essay(topic: Topic.topics.first!)
+    
+    NavigationStack {
+        IterationListView(essay: essay, path: $path)
+            .modelContainer(SampleData.shared.modelContainer)
+    }
 }
