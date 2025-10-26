@@ -15,10 +15,19 @@ class EssayIteration {
     var submissionDate: Date?
     var paragraphs: [String] = []
     
+    var numericID: Int
+    
     init(essay: Essay? = nil, date: Date, paragraphs: [String] = []) {
         self.essay = essay
         self.creationDate = date
         self.paragraphs = paragraphs
+        
+        if let essay {
+            numericID = essay.maxIterations
+            essay.maxIterations += 1
+        } else {
+            numericID = 0
+        }
     }
 }
 
