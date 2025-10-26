@@ -14,6 +14,8 @@ class Essay {
     var iterations: [EssayIteration] = []
     var creationDate: Date? = Date.now
     
+    var maxIterations = 0
+    
     init(topic: Topic, iterations: [EssayIteration] = []) {
         self.topic = topic
         self.iterations = iterations
