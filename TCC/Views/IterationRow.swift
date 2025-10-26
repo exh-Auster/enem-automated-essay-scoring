@@ -36,7 +36,7 @@ struct IterationRow: View {
                     .fontWeight(.light)
                     .foregroundStyle(.secondary)
                 
-                Text("Iteração X") // TODO: numeric ID
+                Text("Iteração \(iteration.numericID + 1)")
             }
             
             Spacer()
