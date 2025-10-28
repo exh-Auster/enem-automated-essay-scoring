@@ -57,7 +57,10 @@ struct IterationListView: View {
             }
         }
         .navigationTitle("Iterações")
-        .navigationSubtitle(essay.topic?.title ?? "")
+        .navigationBarTitleDisplayMode(.inline)
+        .safeAreaInset(edge: .top) {
+            EssayHeader(title: essay.topic?.title ?? "")
+        }
         .navigationDestination(for: EssayIteration.self, destination: { iteration in
             if iteration.isCompleted {
                 ResultsView(iteration: iteration, path: $path)
