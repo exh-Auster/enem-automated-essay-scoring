@@ -68,15 +68,11 @@ struct EssayListView: View {
                 SettingsView()
             }
         }
-        .background(Color(.systemGroupedBackground)) // TODO: confirm
-//        .background(.background)
         .navigationTitle("Redações")
-//        .toolbarTitleDisplayMode(.inlineLarge)
         .navigationDestination(for: Essay.self, destination: { IterationListView(essay: $0, path: $path) })
         .sheet(isPresented: $showingCreateEssaySheet) {
             NavigationStack {
                 CreateEssayView()
-//                    .navigationBarTitleDisplayMode(.inline)
             }
         }
     }
