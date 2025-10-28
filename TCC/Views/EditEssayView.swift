@@ -99,11 +99,17 @@ struct EditEssayView: View {
         .listRowSpacing(10)
         .scrollDismissesKeyboard(.interactively)
         //        .listSectionSeparator(.visible, edges: .all)
-        .navigationTitle(iteration.essay?.topic?.title ?? "")
-        .navigationSubtitle("Palavras: \(iteration.wordCount) | Parágrafos: \(iteration.paragraphCount)")
+        .navigationTitle("Iteração 1")
         .toolbarTitleDisplayMode(.inline)
         .navigationDestination(isPresented: $isShowingReviewScreen) {
             IterationReviewView(iteration: iteration, path: $path)
+        }
+        .safeAreaInset(edge: .top) {
+            EssayHeader(
+                title: iteration.essay?.topic?.title ?? "",
+                wordCount: iteration.wordCount,
+                paragraphCount: iteration.paragraphCount
+            )
         }
         .toolbar {
             if debugEnabled {
@@ -290,4 +296,3 @@ struct SectionHeader: View {
     }
     .modelContainer(SampleData.shared.modelContainer)
 }
-
