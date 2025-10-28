@@ -5,8 +5,9 @@
 //  Created by Felipe Ribeiro on 15/09/25.
 //
 
-import SwiftUI
 import NaturalLanguage
+import SwiftUI
+import Tokenizers
 
 struct IterationDebugView: View {
     let iteration: EssayIteration
@@ -61,6 +62,14 @@ struct IterationDebugView: View {
         .navigationTitle("Debug")
         .onAppear {
             self.possibleLanguages = getlanguageHypotheses(for: iteration.fullText)
+        }
+        .onAppear {
+            guard let tokenizer = BERTimbauTokenizer.shared?.tokenizer else { return }
+            let text = iteration.fullText
+            
+            self.tokenized = tokenizer.tokenize(text: text)
+            self.encoded = tokenizer.encode(text: text)
+            self.decoded = tokenizer.decode(tokens: encoded)
         }
     }
     
