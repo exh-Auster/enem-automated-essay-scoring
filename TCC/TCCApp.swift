@@ -15,6 +15,11 @@ struct TCCApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .task {
+                    if !EnemClassifierPipelineLoader.isReady {
+                        await EnemClassifierPipelineLoader.load()
+                    }
+                }
         }
         .modelContainer(container)
     }
