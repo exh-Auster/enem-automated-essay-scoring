@@ -63,6 +63,16 @@ struct EditEssayView: View {
                             importedText = fullText[0]
                             isShowingImportConfirmationSheet = true
                         }
+                        
+                        if let maxIterations = iteration.essay?.maxIterations {
+                            Button {
+                                importPreviousIteration()
+                            } label: {
+                                Label("Importar iteração anterior", systemImage: "arrow.counterclockwise")
+                            }
+                            .buttonStyle(.glassProminent)
+                            .disabled(maxIterations < 2)
+                        }
                     }
                     .buttonStyle(.glass)
                 }
@@ -223,6 +233,12 @@ struct EditEssayView: View {
         }
             
         importedText = ""
+    }
+    
+    private func importPreviousIteration() {
+        guard let previousIteration = iteration.essay?.iterations.dropLast().last else { return }
+        
+        iteration.paragraphs = previousIteration.paragraphs
     }
 }
 
