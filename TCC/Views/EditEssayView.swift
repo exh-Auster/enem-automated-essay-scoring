@@ -63,6 +63,16 @@ struct EditEssayView: View {
                             importedText = fullText[0]
                             isShowingImportConfirmationSheet = true
                         }
+                        
+                        if let maxIterations = iteration.essay?.maxIterations {
+                            Button {
+                                importPreviousIteration()
+                            } label: {
+                                Label("Importar iteração anterior", systemImage: "arrow.counterclockwise")
+                            }
+                            .buttonStyle(.glassProminent)
+                            .disabled(maxIterations < 2)
+                        }
                     }
                     .buttonStyle(.glass)
                 }
