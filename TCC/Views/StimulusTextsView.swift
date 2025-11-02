@@ -25,6 +25,16 @@ struct StimulusTextsView: View {
                     } footer: {
                         Text(stimulusText["source", default: ""])
                     }
+                    .sectionIndexLabel({
+                        let title = stimulusText["title", default: ""]
+                        if let match = title.range(of: #"TEXTO\s+([IVXLCDM]+)"#, options: .regularExpression) {
+                            return String(title[match])
+                                .replacingOccurrences(of: "TEXTO ", with: "")
+                                .trimmingCharacters(in: .whitespacesAndNewlines)
+                        } else {
+                            return ""
+                        }
+                    }())
                 }
                 .listSectionSpacing(10)
             }
