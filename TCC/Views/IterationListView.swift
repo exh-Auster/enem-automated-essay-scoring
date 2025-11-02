@@ -14,6 +14,8 @@ struct IterationListView: View {
     
     @Binding var path: NavigationPath
     
+    @State private var isShowingStimulusTextsSheet = false
+    
     var body: some View {
         Group {
             if essay.iterations.isEmpty {
@@ -70,11 +72,14 @@ struct IterationListView: View {
         })
         .toolbar {
             ToolbarItem {
-                // TODO: implement
-                Button("Info", systemImage: "info.circle") { }
+                Button {
+                    isShowingStimulusTextsSheet = true
+                } label: {
+                    Label("Textos Motivadores", systemImage: "info.circle")
+                }
             }
             
-//            ToolbarSpacer()
+            ToolbarSpacer()
             
             ToolbarItem {
                 Button("Nova iteração", systemImage: "plus") {
@@ -83,6 +88,9 @@ struct IterationListView: View {
                     }
                 }
             }
+        }
+        .sheet(isPresented: $isShowingStimulusTextsSheet) {
+            StimulusTextsView(stimulusTexts: essay.topic?.stimulusTexts ?? [])
         }
     }
     

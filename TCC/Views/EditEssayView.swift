@@ -27,6 +27,8 @@ struct EditEssayView: View {
     @State private var isShowingFileImporter = false
     @State private var isShowingImportConfirmationSheet = false
     
+    @State private var isShowingStimulusTextsSheet = false
+    
     @Binding var path: NavigationPath
     
     init(iteration: EssayIteration, path: Binding<NavigationPath>) {
@@ -133,6 +135,14 @@ struct EditEssayView: View {
                 }
             }
             
+            ToolbarItem {
+                Button {
+                    isShowingStimulusTextsSheet = true
+                } label: {
+                    Label("Textos Motivadores", systemImage: "info.circle")
+                }
+            }
+            
             ToolbarItem(placement: .confirmationAction) {
                 Button {
                     if !validateLength() {
@@ -178,6 +188,9 @@ struct EditEssayView: View {
             applyImportedText()
         } content: {
             ImportConfirmationView(iteration: iteration, importedText: $importedText)
+        }
+        .sheet(isPresented: $isShowingStimulusTextsSheet) {
+            StimulusTextsView(stimulusTexts: iteration.essay?.topic?.stimulusTexts ?? [])
         }
     }
     
