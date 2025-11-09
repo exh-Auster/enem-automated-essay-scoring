@@ -13,6 +13,7 @@ struct ResultsView: View {
     let iteration: EssayIteration
     var isFirstPresentation: Bool = false
     
+    @State private var selectedCompetencyIndex = 0
     @Binding var path: NavigationPath
     
     var body: some View {
@@ -22,13 +23,27 @@ struct ResultsView: View {
                 
                 HStack {
                     ForEach((iteration.scores ?? [-1, -1, -1, -1, -1]).enumerated(), id: \.offset) { index, cls in
-                        ScoreBadgeView(label: "C\(index + 1)", score: cls)
+                        Button {
+                            withAnimation {
+                                selectedCompetencyIndex = index
+                            }
+                        } label: {
+                            ScoreBadgeView(label: "C\(index + 1)", score: cls)
+                                .background {
+                                    let shouldHighlight = index == selectedCompetencyIndex
+                                    
+                                    Circle()
+                                        .stroke(.enemBlue1, lineWidth: shouldHighlight ? 8 : 0)
+                                        .stroke(.background, lineWidth: shouldHighlight ? 3 : 0)
+                                        .shadow(radius: shouldHighlight ? 5 : 0)
+                                }
+                        }
                     }
                 }
                 
-                TabView {
-                    ForEach(Competency.competencies) { competency in
-                        Tab {
+                TabView(selection: $selectedCompetencyIndex) {
+                    ForEach(Competency.competencies.enumerated(), id: \.offset) { index, competency in
+                        Tab(value: index) {
                             ScrollView {
                                 Grid(alignment: .leading, horizontalSpacing: 12, verticalSpacing: 10) {
                                     GridRow {
