@@ -13,22 +13,64 @@ struct ResultsView: View {
     let iteration: EssayIteration
     var isFirstPresentation: Bool = false
     
+    @State private var selectedCompetencyIndex = 0
     @Binding var path: NavigationPath
     
-    // TODO: remove
-    let scores = [40, 80, 120, 160, 200]
-    
     var body: some View {
-        VStack {
-            ScoreBadgeView(type: .totalLarge, score: scores.reduce(0, +))
-            
-            HStack {
-                ForEach(scores.indices, id: \.self) {
-                    ScoreBadgeView(label: "C\($0 + 1)", score: scores[$0])
+        Group {
+            VStack {
+                ScoreBadgeView(type: .totalLarge, score: iteration.totalScore ?? -1)
+                
+                HStack {
+                    ForEach((iteration.scores ?? [-1, -1, -1, -1, -1]).enumerated(), id: \.offset) { index, cls in
+                        Button {
+                            withAnimation {
+                                selectedCompetencyIndex = index
+                            }
+                        } label: {
+                            ScoreBadgeView(label: "C\(index + 1)", score: cls)
+                                .background {
+                                    let shouldHighlight = index == selectedCompetencyIndex
+                                    
+                                    Circle()
+                                        .stroke(.enemBlue1, lineWidth: shouldHighlight ? 8 : 0)
+                                        .stroke(.background, lineWidth: shouldHighlight ? 3 : 0)
+                                        .shadow(radius: shouldHighlight ? 5 : 0)
+                                }
+                        }
+                    }
                 }
+                
+                TabView(selection: $selectedCompetencyIndex) {
+                    ForEach(Competency.competencies.enumerated(), id: \.offset) { index, competency in
+                        Tab(value: index) {
+                            ScrollView {
+                                Grid(alignment: .leading, horizontalSpacing: 12, verticalSpacing: 10) {
+                                    GridRow {
+                                        Text("Nível")
+                                        Text("Descrição")
+                                    }
+                                    .fontWeight(.semibold)
+                                    
+                                    Divider().gridCellColumns(2)
+                                    
+                                    ForEach(competency.levels, id: \.0) { level in
+                                        GridRow {
+                                            Text("\(level.0)")
+                                            Text(level.1)
+                                                .fixedSize(horizontal: false, vertical: true)
+                                        }
+                                    }
+                                }
+                            }
+                            .padding()
+                        }
+                    }
+                }
+                .ignoresSafeArea(.all)
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .frame(maxHeight: .infinity)
             }
-            
-            Spacer()
         }
         .navigationTitle("Resultados")
         .navigationBarTitleDisplayMode(.inline)
@@ -46,8 +88,6 @@ struct ResultsView: View {
             }
             
             if isFirstPresentation {
-//                ToolbarItem(placement: .topBarLeading) {
-//                    Button("Concluir", systemImage: "chevron.left") {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Concluir", systemImage: "checkmark") {
                         path.removeLast(path.count - 1)
@@ -61,7 +101,11 @@ struct ResultsView: View {
 #Preview {
     @Previewable @State var path = NavigationPath()
     
-    NavigationStack {
-        ResultsView(iteration: SampleData.shared.iteration, path: $path)
+    TabView {
+        Tab("Redações", systemImage: "questionmark") {
+            NavigationStack {
+                ResultsView(iteration: SampleData.shared.iteration, path: $path)
+            }
+        }
     }
 }

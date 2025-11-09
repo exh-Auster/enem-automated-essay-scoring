@@ -17,6 +17,33 @@ class EssayIteration {
     
     var numericID: Int
     
+    var c1Class: Int?
+    var c1Probs: [Double]?
+    
+    var c2Class: Int?
+    var c2Probs: [Double]?
+    
+    var c3Class: Int?
+    var c3Probs: [Double]?
+    
+    var c4Class: Int?
+    var c4Probs: [Double]?
+    
+    var c5Class: Int?
+    var c5Probs: [Double]?
+    
+    var scores: [Int]? {
+        guard let c1Class, let c2Class, let c3Class, let c4Class, let c5Class else { return nil }
+        
+        return [c1Class, c2Class, c3Class, c4Class, c5Class].map { $0 * 40 }
+    }
+    
+    var totalScore: Int? {
+        guard let scores else { return nil }
+        
+        return scores.reduce(0, +)
+    }
+    
     init(essay: Essay? = nil, date: Date, paragraphs: [String] = []) {
         self.essay = essay
         self.creationDate = date
