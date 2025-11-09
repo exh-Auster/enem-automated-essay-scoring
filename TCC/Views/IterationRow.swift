@@ -10,14 +10,6 @@ import SwiftUI
 struct IterationRow: View {
     let iteration: EssayIteration
     
-    // TODO: remove
-    let scores = [0, 40, 80, 120, 160, 200]
-    var score: Int {
-        (1...5).reduce(0) { partialResult, _ in
-            partialResult + scores.randomElement()!
-        }
-    }
-    
     var creationDate: String {
         iteration.creationDate.formatted(date: .numeric, time: .omitted)
     }
@@ -41,7 +33,7 @@ struct IterationRow: View {
             
             Spacer()
             
-            ScoreBadgeView(type: iteration.isCompleted ? .totalSmall : .pending, score: score)
+            ScoreBadgeView(type: iteration.isCompleted ? .totalSmall : .pending, score: iteration.totalScore ?? -1)
         }
     }
 }
