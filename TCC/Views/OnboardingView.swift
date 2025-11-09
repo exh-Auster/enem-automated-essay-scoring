@@ -42,7 +42,7 @@ struct OnboardingView: View {
     
     var body: some View {
         Group {
-            Text("Boas-vindas ao AES!")
+            Text("Boas-vindas!")
                 .font(.largeTitle)
                 .fontDesign(.serif)
                 .fontWeight(.medium)
