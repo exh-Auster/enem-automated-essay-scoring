@@ -16,8 +16,8 @@ struct TCCApp: App {
         WindowGroup {
             ContentView()
                 .task {
-                    if !EnemClassifierPipelineLoader.isReady {
-                        await EnemClassifierPipelineLoader.load()
+                    if !EnemEssayClassifierPipelineLoader.isReady {
+                        await EnemEssayClassifierPipelineLoader.load()
                     }
                 }
         }
