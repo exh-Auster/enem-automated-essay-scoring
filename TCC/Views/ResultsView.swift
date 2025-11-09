@@ -15,9 +15,6 @@ struct ResultsView: View {
     
     @Binding var path: NavigationPath
     
-    // TODO: remove
-    let scores = [40, 80, 120, 160, 200]
-    
     var body: some View {
         Group {
             VStack {
