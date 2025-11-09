@@ -19,16 +19,46 @@ struct ResultsView: View {
     let scores = [40, 80, 120, 160, 200]
     
     var body: some View {
-        VStack {
-            ScoreBadgeView(type: .totalLarge, score: scores.reduce(0, +))
-            
-            HStack {
-                ForEach(scores.indices, id: \.self) {
-                    ScoreBadgeView(label: "C\($0 + 1)", score: scores[$0])
+        Group {
+            VStack {
+                ScoreBadgeView(type: .totalLarge, score: iteration.totalScore ?? -1)
+                
+                HStack {
+                    ForEach((iteration.scores ?? [-1, -1, -1, -1, -1]).enumerated(), id: \.offset) { index, cls in
+                        ScoreBadgeView(label: "C\(index + 1)", score: cls)
+                    }
                 }
+                
+                TabView {
+                    ForEach(Competency.competencies) { competency in
+                        Tab {
+                            ScrollView {
+                                Grid(alignment: .leading, horizontalSpacing: 12, verticalSpacing: 10) {
+                                    GridRow {
+                                        Text("Nível")
+                                        Text("Descrição")
+                                    }
+                                    .fontWeight(.semibold)
+                                    
+                                    Divider().gridCellColumns(2)
+                                    
+                                    ForEach(competency.levels, id: \.0) { level in
+                                        GridRow {
+                                            Text("\(level.0)")
+                                            Text(level.1)
+                                                .fixedSize(horizontal: false, vertical: true)
+                                        }
+                                    }
+                                }
+                            }
+                            .padding()
+                        }
+                    }
+                }
+                .ignoresSafeArea(.all)
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .frame(maxHeight: .infinity)
             }
-            
-            Spacer()
         }
         .navigationTitle("Resultados")
         .navigationBarTitleDisplayMode(.inline)
