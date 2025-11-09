@@ -13,7 +13,7 @@ class EnemEssayClassifierPipelineLoader {
     
     static func load() async {
         try? await BERTimbauTokenizer.makeShared()
-//        try? await EnemEssayClassifierPipeline.makeShared()
+        try? await EnemEssayClassifierPipeline.makeShared()
         isReady = true
     }
 }
