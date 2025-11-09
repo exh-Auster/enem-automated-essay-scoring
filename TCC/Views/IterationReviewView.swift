@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TipKit
 
 struct IterationReviewView: View {
     @AppStorage("debugEnabled") var debugEnabled = false
@@ -16,6 +17,8 @@ struct IterationReviewView: View {
     @State private var isSubmitted = false
     
     @Binding var path: NavigationPath
+    
+    let modelLoadingTip = ModelLoadingTip()
     
     var body: some View {
         ScrollView {
@@ -45,6 +48,7 @@ struct IterationReviewView: View {
                 } label: {
                     if isLoading {
                         ProgressView()
+                            .popoverTip(modelLoadingTip, arrowEdge: .top)
                     } else {
                         Label("Enviar", systemImage: "arrow.up")
                     }
@@ -57,6 +61,7 @@ struct IterationReviewView: View {
     }
     
     private func rateEssay() async {
+        ModelLoadingTip.modelsLoading = !EnemEssayClassifierPipelineLoader.isReady
         isLoading = true
         
         while EnemEssayClassifierPipeline.shared == nil {
@@ -71,11 +76,19 @@ struct IterationReviewView: View {
         (iteration.c4Class, iteration.c4Probs),
         (iteration.c5Class, iteration.c5Probs)) = await pipeline.rate(iteration)
         
+        if ModelLoadingTip.modelsLoading {
+            ModelLoadingTip.modelsLoading = false
+            
+            try? await Task.sleep(for: .milliseconds(300))
+        }
+        
         iteration.submissionDate = .now
         isSubmitted = true
         isLoading = false
     }
 }
+
+// MARK: - Previews
 
 #Preview {
     @Previewable @State var path = NavigationPath()

@@ -8,6 +8,7 @@
 import NaturalLanguage
 import SwiftData
 import SwiftUI
+import TipKit
 import UniformTypeIdentifiers
 
 struct EditEssayView: View {
@@ -191,6 +192,9 @@ struct EditEssayView: View {
         }
         .sheet(isPresented: $isShowingStimulusTextsSheet) {
             StimulusTextsView(stimulusTexts: iteration.essay?.topic?.stimulusTexts ?? [])
+        }
+        .onAppear {
+            PendingScoreTip.hasSeenIteration.sendDonation()
         }
     }
     
