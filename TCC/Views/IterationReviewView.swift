@@ -11,6 +11,8 @@ struct IterationReviewView: View {
     @AppStorage("debugEnabled") var debugEnabled = false
     
     @Bindable var iteration: EssayIteration
+    
+    @State private var isLoading = false
     @State private var isSubmitted = false
     
     @Binding var path: NavigationPath
@@ -37,17 +39,41 @@ struct IterationReviewView: View {
             
             ToolbarItem(placement: .confirmationAction) {
                 Button {
-                    // TODO: implement
-                    iteration.submissionDate = .now
-                    isSubmitted = true
+                    Task {
+                        await rateEssay()
+                    }
                 } label: {
-                    Label("Enviar", systemImage: "arrow.up")
+                    if isLoading {
+                        ProgressView()
+                    } else {
+                        Label("Enviar", systemImage: "arrow.up")
+                    }
                 }
             }
         }
         .navigationDestination(isPresented: $isSubmitted) {
             ResultsView(iteration: iteration, isFirstPresentation: true, path: $path)
         }
+    }
+    
+    private func rateEssay() async {
+        isLoading = true
+        
+        while EnemEssayClassifierPipeline.shared == nil {
+            try? await Task.sleep(for: .milliseconds(100))
+        }
+        
+        guard let pipeline = EnemEssayClassifierPipeline.shared else { return }
+        
+        ((iteration.c1Class, iteration.c1Probs),
+        (iteration.c2Class, iteration.c2Probs),
+        (iteration.c3Class, iteration.c3Probs),
+        (iteration.c4Class, iteration.c4Probs),
+        (iteration.c5Class, iteration.c5Probs)) = await pipeline.rate(iteration)
+        
+        iteration.submissionDate = .now
+        isSubmitted = true
+        isLoading = false
     }
 }
 
