@@ -46,8 +46,6 @@ struct ResultsView: View {
             }
             
             if isFirstPresentation {
-//                ToolbarItem(placement: .topBarLeading) {
-//                    Button("Concluir", systemImage: "chevron.left") {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Concluir", systemImage: "checkmark") {
                         path.removeLast(path.count - 1)
