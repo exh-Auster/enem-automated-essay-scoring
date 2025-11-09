@@ -86,7 +86,11 @@ struct ResultsView: View {
 #Preview {
     @Previewable @State var path = NavigationPath()
     
-    NavigationStack {
-        ResultsView(iteration: SampleData.shared.iteration, path: $path)
+    TabView {
+        Tab("Redações", systemImage: "questionmark") {
+            NavigationStack {
+                ResultsView(iteration: SampleData.shared.iteration, path: $path)
+            }
+        }
     }
 }
