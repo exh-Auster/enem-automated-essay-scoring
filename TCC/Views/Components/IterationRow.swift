@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import TipKit
 
 struct IterationRow: View {
     let iteration: EssayIteration
+    
+    let pendingScoreTip = PendingScoreTip()
     
     var creationDate: String {
         iteration.creationDate.formatted(date: .numeric, time: .omitted)
@@ -34,9 +37,12 @@ struct IterationRow: View {
             Spacer()
             
             ScoreBadgeView(type: iteration.isCompleted ? .totalSmall : .pending, score: iteration.totalScore ?? -1)
+                .popoverTip(pendingScoreTip, arrowEdge: .top)
         }
     }
 }
+
+// MARK: - Previews
 
 #Preview {
     let iteration = EssayIteration(

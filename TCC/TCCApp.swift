@@ -7,6 +7,7 @@
 
 import SwiftData
 import SwiftUI
+import TipKit
 
 @main
 struct TCCApp: App {
@@ -34,5 +35,21 @@ struct TCCApp: App {
         } catch {
             fatalError("Error creating ModelContainer: \(error.localizedDescription).")
         }
+        
+        do {
+            try setupTips()
+        } catch {
+            print("Error initializing TipKit: \(error.localizedDescription)")
+        }
+    }
+    
+    private func setupTips() throws {
+//        Tips.showAllTipsForTesting()
+//        Tips.showTipsForTesting([])
+//        Tips.hideAllTipsForTesting()
+//        
+//        try Tips.resetDatastore()
+
+        try Tips.configure()
     }
 }
