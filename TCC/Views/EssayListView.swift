@@ -38,6 +38,7 @@ struct EssayListView: View {
                 List {
                     ForEach(essays) { essay in
                         NavigationLink(value: essay) {
+                            // TODO: remove force unwrapping
                             TopicRowView(topic: essay.topic!)
                         }
                         .badge(essay.iterations.count)

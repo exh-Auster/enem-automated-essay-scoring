@@ -41,6 +41,8 @@ struct ResultsView: View {
                     }
                 }
                 
+                // FIXME: swiping / changing tabs via buttons
+                // FIXME: alignment
                 TabView(selection: $selectedCompetencyIndex) {
                     ForEach(Competency.competencies.enumerated(), id: \.offset) { index, competency in
                         Tab(value: index) {

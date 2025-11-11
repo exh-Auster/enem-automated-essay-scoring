@@ -62,7 +62,7 @@ struct CreateEssayView: View {
         let newEssay = Essay(topic: topic) // TODO: fix
         
         modelContext.insert(newEssay)
-        try! modelContext.save()
+        try? modelContext.save()
     }
 }
 

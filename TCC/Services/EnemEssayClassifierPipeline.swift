@@ -64,6 +64,7 @@ class EnemEssayClassifierPipeline {
     private func tokenize(_ text: String) -> (inputIds: MLMultiArray, attentionMask: MLMultiArray) {
         guard let tokenizer = BERTimbauTokenizer.shared?.tokenizer else { return (MLMultiArray(), MLMultiArray()) }
         
+        // TODO: remove force unwrapping
         let inputIds = try! MLMultiArray(shape: [1, NSNumber(value: 512)], dataType: .int32)
         let attentionMask = try! MLMultiArray(shape: [1, NSNumber(value: 512)], dataType: .int32)
         
@@ -126,6 +127,7 @@ class EnemEssayClassifierPipeline {
         let (stimulusTextsInputIds, stimulusTextsAttentionMask) = tokenize(stimulusTexts?.description ?? "")
         let (essayTextInputIds, essayTextAttentionMask) = tokenize(iteration.fullText)
         
+        // TODO: remove force unwrapping
         async let (c1Label, c1Probs) = try! predict(
             using: c1Classifier,
             stimulusTextsInputIds: stimulusTextsInputIds,
