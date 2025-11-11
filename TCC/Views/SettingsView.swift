@@ -19,7 +19,7 @@ struct SettingsView: View {
         List {
             Section {
                 NavigationLink {
-                    Text("WIP")
+                    ModelsDetailView()
                 } label: {
                     Label("Informações", systemImage: "info.circle")
                 }
