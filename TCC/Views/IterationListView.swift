@@ -87,6 +87,7 @@ struct IterationListView: View {
                         createIteration(for: essay)
                     }
                 }
+                .disabled(!(essay.iterations.last?.isCompleted ?? true))
             }
         }
         .sheet(isPresented: $isShowingStimulusTextsSheet) {
