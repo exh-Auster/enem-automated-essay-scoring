@@ -13,6 +13,8 @@ struct CreateEssayView: View {
     
     @State private var newEssay: Essay?
     
+    @Binding var path: NavigationPath
+    
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
     
@@ -63,6 +65,8 @@ struct CreateEssayView: View {
         
         modelContext.insert(newEssay)
         try? modelContext.save()
+        
+        path.append(newEssay)
     }
 }
 
@@ -70,7 +74,7 @@ struct CreateEssayView: View {
     Text("CreateEssayView preview")
         .sheet(isPresented: .constant(true)) {
             NavigationStack {
-                CreateEssayView()
+                CreateEssayView(path: .constant(NavigationPath()))
                     .modelContainer(SampleData.shared.modelContainer)
             }
         }
