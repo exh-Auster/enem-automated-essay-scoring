@@ -112,7 +112,7 @@ struct EditEssayView: View {
         .listRowSpacing(10)
         .scrollDismissesKeyboard(.interactively)
         //        .listSectionSeparator(.visible, edges: .all)
-        .navigationTitle("Iteração 1")
+        .navigationTitle("Iteração \(iteration.numericID + 1)")
         .toolbarTitleDisplayMode(.inline)
         .navigationDestination(isPresented: $isShowingReviewScreen) {
             IterationReviewView(iteration: iteration, path: $path)
