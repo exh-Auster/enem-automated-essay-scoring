@@ -103,6 +103,8 @@ struct IterationListView: View {
         modelContext.insert(newIteration)
         
         try? modelContext.save()
+        
+        path.append(newIteration)
     }
     
     private func deleteIterations(at indexSet: IndexSet) {
