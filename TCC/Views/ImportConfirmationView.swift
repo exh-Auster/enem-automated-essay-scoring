@@ -13,6 +13,8 @@ struct ImportConfirmationView: View {
     
     @State private var revisedImportedText: String = ""
     
+    @State private var isShowingFindNavigator = false
+    
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -28,13 +30,10 @@ struct ImportConfirmationView: View {
                 Divider()
                     .padding(.vertical)
                 
-                TextField("", text: $revisedImportedText, axis: .vertical)
-                    .textFieldStyle(.roundedBorder)
+                TextEditor(text: $revisedImportedText)
                     .fontDesign(.serif)
                     .autocorrectionDisabled()
-                    .lineLimit(6...)
-                
-                Spacer()
+                    .findNavigator(isPresented: $isShowingFindNavigator)
             }
             .padding(.horizontal)
             .navigationTitle("Revisão")
@@ -45,6 +44,10 @@ struct ImportConfirmationView: View {
                         importedText = ""
                         dismiss()
                     }
+                }
+                
+                ToolbarItem {
+                    Toggle("Buscar", systemImage: "magnifyingglass", isOn: $isShowingFindNavigator)
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
