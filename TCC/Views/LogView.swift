@@ -46,7 +46,12 @@ struct LogView: View {
                     ToolbarItem(placement: .primaryAction) {
                         Button("Atualizar", systemImage: "arrow.clockwise") {
                             Task {
+                                let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
+                                let notificationFeedbackGenerator = UINotificationFeedbackGenerator()
+
+                                impactFeedbackGenerator.impactOccurred()
                                 await logStore.fetchEntries()
+                                notificationFeedbackGenerator.notificationOccurred(.success)
                             }
                         }
                     }
