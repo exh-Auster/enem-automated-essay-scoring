@@ -34,30 +34,30 @@ class EnemEssayClassifierPipeline {
         let c1Model = try await EnemEssayC1Classifier.load()
         let c1Time = Date.now
         let c1Duration = c1Time.timeIntervalSince(startTime)
-        Logger.mlPipeline.notice("C1 model loaded in \(String(format: "%.2f", c1Duration)) seconds")
+        Logger.mlPipeline.notice("C1 model loaded in \(String(format: "%.2f", c1Duration), privacy: .public) seconds")
         
         let c2Model = try await EnemEssayC2Classifier.load()
         let c2Time = Date.now
         let c2Duration = c2Time.timeIntervalSince(c1Time)
-        Logger.mlPipeline.notice("C2 model loaded in \(String(format: "%.2f", c2Duration)) seconds")
+        Logger.mlPipeline.notice("C2 model loaded in \(String(format: "%.2f", c2Duration), privacy: .public) seconds")
         
         let c3Model = try await EnemEssayC3Classifier.load()
         let c3Time = Date.now
         let c3Duration = c3Time.timeIntervalSince(c2Time)
-        Logger.mlPipeline.notice("C3 model loaded in \(String(format: "%.2f", c3Duration)) seconds")
+        Logger.mlPipeline.notice("C3 model loaded in \(String(format: "%.2f", c3Duration), privacy: .public) seconds")
         
         let c4Model = try await EnemEssayC4Classifier.load()
         let c4Time = Date.now
         let c4Duration = c4Time.timeIntervalSince(c3Time)
-        Logger.mlPipeline.notice("C4 model loaded in \(String(format: "%.2f", c4Duration)) seconds")
+        Logger.mlPipeline.notice("C4 model loaded in \(String(format: "%.2f", c4Duration), privacy: .public) seconds")
         
         let c5Model = try await EnemEssayC5Classifier.load()
         let c5Time = Date.now
         let c5Duration = c5Time.timeIntervalSince(c4Time)
-        Logger.mlPipeline.notice("C5 model loaded in \(String(format: "%.2f", c5Duration)) seconds")
+        Logger.mlPipeline.notice("C5 model loaded in \(String(format: "%.2f", c5Duration), privacy: .public) seconds")
         
         let totalTime = c1Duration + c2Duration + c3Duration + c4Duration + c5Duration
-        Logger.mlPipeline.notice("Finished loading models in \(String(format: "%.2f", totalTime)) seconds")
+        Logger.mlPipeline.notice("Finished loading models in \(String(format: "%.2f", totalTime), privacy: .public) seconds")
         
         shared = EnemEssayClassifierPipeline(c1Classifier: c1Model, c2Classifier: c2Model, c3Classifier: c3Model, c4Classifier: c4Model, c5Classifier: c5Model)
     }
@@ -73,7 +73,7 @@ class EnemEssayClassifierPipeline {
         
         for (i, token) in encodedText.enumerated() {
             if i > 511 {
-                Logger.mlPipeline.info("Triggered truncation with \(encodedText.count - i) tokens remaining")
+                Logger.mlPipeline.info("Triggered truncation with \(encodedText.count - i, privacy: .public) tokens remaining")
                 break
             }
             
@@ -89,7 +89,7 @@ class EnemEssayClassifierPipeline {
         }
 
         Logger.mlPipeline.debug("inputIds: \(inputIds.debugDescription, privacy: .private)")
-        Logger.mlPipeline.debug("attentionMask: \(attentionMask.debugDescription)")
+        Logger.mlPipeline.debug("attentionMask: \(attentionMask.debugDescription, privacy: .public)")
         
         return (inputIds, attentionMask)
     }
