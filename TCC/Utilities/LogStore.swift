@@ -26,4 +26,8 @@ class LogStore {
             print(error.localizedDescription)
         }
     }
+    
+    func exportEntries() -> String {
+        entries.joined(separator: "\n")
+    }
 }

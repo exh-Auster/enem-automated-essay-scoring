@@ -32,6 +32,17 @@ struct LogView: View {
                     }
                 }
                 .toolbar {
+                    ToolbarItem {
+                        Button {
+                            let generator = UINotificationFeedbackGenerator()
+                            
+                            UIPasteboard.general.string = logStore.exportEntries()
+                            generator.notificationOccurred(.success)
+                        } label: {
+                            Label("Copiar", systemImage: "document.on.document")
+                        }
+                    }
+                    
                     ToolbarItem(placement: .primaryAction) {
                         Button("Atualizar", systemImage: "arrow.clockwise") {
                             Task {
