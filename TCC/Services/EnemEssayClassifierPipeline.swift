@@ -29,7 +29,7 @@ class EnemEssayClassifierPipeline {
     
     static func makeShared() async throws {
         let startTime = Date.now
-        Logger.mlPipeline.notice("Started loading models at \(startTime)")
+        Logger.mlPipeline.notice("Started loading models...")
         
         let c1Model = try await EnemEssayC1Classifier.load()
         let c1Time = Date.now
