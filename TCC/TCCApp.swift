@@ -12,6 +12,8 @@ import TipKit
 
 @main
 struct TCCApp: App {
+    @State private var logStore = LogStore()
+    
     let container: ModelContainer
     
     var body: some Scene {
@@ -24,6 +26,7 @@ struct TCCApp: App {
                 }
         }
         .modelContainer(container)
+        .environment(logStore)
     }
     
     init() {
