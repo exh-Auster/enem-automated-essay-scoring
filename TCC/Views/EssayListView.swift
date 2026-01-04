@@ -73,7 +73,7 @@ struct EssayListView: View {
         .navigationDestination(for: Essay.self, destination: { IterationListView(essay: $0, path: $path) })
         .sheet(isPresented: $showingCreateEssaySheet) {
             NavigationStack {
-                CreateEssayView()
+                CreateEssayView(path: $path)
             }
         }
     }

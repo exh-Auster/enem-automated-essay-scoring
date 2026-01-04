@@ -25,7 +25,8 @@ struct EssayHeader: View {
             
             if let paragraphCount, let wordCount, paragraphCount > 0 {
                 HStack(spacing: 15) {
-                    CountCard(title: "palavras", count: wordCount)
+                    // TODO: use string catalogs for pluralization
+                    CountCard(title: wordCount != 1 ? "palavras" : "palavra", count: wordCount)
                     
                     CountCard(title: "parágrafos", count: paragraphCount)
                 }

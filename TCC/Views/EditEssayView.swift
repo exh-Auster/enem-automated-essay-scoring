@@ -100,7 +100,10 @@ struct EditEssayView: View {
                                 addParagraph(at: i + 1)
                             }
                         } header: {
-                            SectionHeader(title: "Parágrafo \(i + 1) (\(iteration.getWordCountForParagraph(at: i) ?? 0) palavras)",
+                            let paragraphWordCount = iteration.getWordCountForParagraph(at: i) ?? 0
+                            
+                            // TODO: use string catalogs for pluralization
+                            SectionHeader(title: "Parágrafo \(i + 1) (\(paragraphWordCount) \(paragraphWordCount != 1 ? "palavras" : "palavra"))",
                                 isExpanded: $expandedStates[i]
                             )
                         }
@@ -112,7 +115,7 @@ struct EditEssayView: View {
         .listRowSpacing(10)
         .scrollDismissesKeyboard(.interactively)
         //        .listSectionSeparator(.visible, edges: .all)
-        .navigationTitle("Iteração 1")
+        .navigationTitle("Iteração \(iteration.numericID + 1)")
         .toolbarTitleDisplayMode(.inline)
         .navigationDestination(isPresented: $isShowingReviewScreen) {
             IterationReviewView(iteration: iteration, path: $path)
