@@ -5,12 +5,15 @@
 //  Created by Felipe Ribeiro on 27/07/25.
 //
 
+import OSLog
 import SwiftData
 import SwiftUI
 import TipKit
 
 @main
 struct TCCApp: App {
+    @State private var logStore = LogStore()
+    
     let container: ModelContainer
     
     var body: some Scene {
@@ -23,6 +26,7 @@ struct TCCApp: App {
                 }
         }
         .modelContainer(container)
+        .environment(logStore)
     }
     
     init() {
@@ -39,7 +43,7 @@ struct TCCApp: App {
         do {
             try setupTips()
         } catch {
-            print("Error initializing TipKit: \(error.localizedDescription)")
+            Logger.tips.error("Error initializing TipKit: \(error.localizedDescription)")
         }
     }
     

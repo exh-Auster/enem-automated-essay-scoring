@@ -41,6 +41,15 @@ struct SettingsView: View {
                 } footer: {
                     Text("Habilita telas de debug e exibe estatísticas adicionais, como número de tokens.")
                 }
+                
+                Section {
+                    NavigationLink {
+                        LogView()
+                    } label: {
+                        Label("Logs", systemImage: "doc.text.magnifyingglass")
+                    }
+
+                }
             }
         }
         .navigationTitle("Configurações")

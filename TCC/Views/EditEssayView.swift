@@ -6,6 +6,7 @@
 //
 
 import NaturalLanguage
+import OSLog
 import SwiftData
 import SwiftUI
 import TipKit
@@ -182,10 +183,10 @@ struct EditEssayView: View {
                     try importedText = decodeTextFile(from: fileUrl)
                     isShowingImportConfirmationSheet = true
                 } catch {
-                    print(error.localizedDescription)
+                    Logger.fileImporter.error("Failed to import file: \(error.localizedDescription, privacy: .private(mask: .hash))")
                 }
             case .failure(let error):
-                print(error.localizedDescription)
+                Logger.fileImporter.error("Failed to import file: \(error.localizedDescription, privacy: .private(mask: .hash))")
             }
         }
         .sheet(isPresented: $isShowingImportConfirmationSheet) {
