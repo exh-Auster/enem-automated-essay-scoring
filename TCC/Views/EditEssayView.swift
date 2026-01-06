@@ -257,7 +257,7 @@ struct EditEssayView: View {
     }
     
     private func importPreviousIteration() {
-        guard let previousIteration = iteration.essay?.iterations.dropLast().last else { return }
+        guard let previousIteration = iteration.essay?.iterations?.dropLast().last else { return }
         
         iteration.paragraphs = previousIteration.paragraphs
     }

@@ -41,7 +41,7 @@ struct EssayListView: View {
                             // TODO: remove force unwrapping
                             TopicRowView(topic: essay.topic!)
                         }
-                        .badge(essay.iterations.count)
+                        .badge(essay.iterations?.count ?? 0)
                     }
                     .onDelete(perform: deleteEssays)
                 }

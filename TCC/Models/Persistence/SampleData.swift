@@ -51,7 +51,7 @@ class SampleData {
 //        }
         
         for essay in Essay.sampleData {
-            essay.iterations.append(iteration)
+            essay.iterations?.append(iteration)
             context.insert(essay)
         }
         

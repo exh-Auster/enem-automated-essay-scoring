@@ -18,7 +18,7 @@ struct IterationListView: View {
     
     var body: some View {
         Group {
-            if essay.iterations.isEmpty {
+            if let iterations = essay.iterations, iterations.isEmpty {
                 ContentUnavailableView {
                     Label("Adicione sua primeira iteração", systemImage: "text.badge.plus")
                 } description: {
@@ -35,9 +35,9 @@ struct IterationListView: View {
                 }
             } else {
                 List {
-                    if !essay.iterations.filter( { !$0.isCompleted } ).isEmpty {
+                    if let iterations = essay.iterations, !iterations.filter( { !$0.isCompleted } ).isEmpty {
                         Section("Em progresso") {
-                            ForEach(essay.iterations.filter { $0.isCompleted == false } ) { iteration in
+                            ForEach(iterations.filter { $0.isCompleted == false } ) { iteration in
                                 NavigationLink(value: iteration) {
                                     IterationRow(iteration: iteration)
                                 }
@@ -45,9 +45,9 @@ struct IterationListView: View {
                         }
                     }
                     
-                    if !essay.iterations.filter(\.isCompleted).isEmpty {
+                    if let iterations = essay.iterations, !iterations.filter(\.isCompleted).isEmpty {
                         Section("Avaliadas") {
-                            ForEach(essay.iterations.filter(\.isCompleted)) { iteration in
+                            ForEach(iterations.filter(\.isCompleted)) { iteration in
                                 NavigationLink(value: iteration) {
                                     IterationRow(iteration: iteration)
                                 }
@@ -87,7 +87,7 @@ struct IterationListView: View {
                         createIteration(for: essay)
                     }
                 }
-                .disabled(!(essay.iterations.last?.isCompleted ?? true))
+                .disabled(!(essay.iterations?.last?.isCompleted ?? true))
             }
         }
         .sheet(isPresented: $isShowingStimulusTextsSheet) {
@@ -97,7 +97,7 @@ struct IterationListView: View {
     
     private func createIteration(for essay: Essay) {
         // FIXME: throwing?
-        guard essay.iterations.allSatisfy({ $0.isCompleted }) else { return }
+        guard let iterations = essay.iterations, iterations.allSatisfy({ $0.isCompleted }) else { return }
         
         let newIteration = EssayIteration(essay: essay, date: .now)
         modelContext.insert(newIteration)
@@ -109,7 +109,7 @@ struct IterationListView: View {
     
     private func deleteIterations(at indexSet: IndexSet) {
         for index in indexSet {
-            let iteration = essay.iterations[index]
+            guard let iteration = essay.iterations?[index] else { return }
             modelContext.delete(iteration)
         }
         

@@ -11,7 +11,7 @@ import SwiftData
 @Model
 class Essay {
     var topic: Topic?
-    var iterations: [EssayIteration] = []
+    var iterations: [EssayIteration]? = []
     var creationDate: Date? = Date.now
     
     var maxIterations = 0

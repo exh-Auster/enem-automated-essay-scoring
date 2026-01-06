@@ -11,11 +11,11 @@ import SwiftData
 @Model
 class EssayIteration {
     var essay: Essay?
-    var creationDate: Date
+    var creationDate: Date = Date.now
     var submissionDate: Date?
     var paragraphs: [String] = []
     
-    var numericID: Int
+    var numericID: Int = 0
     
     var c1Class: Int?
     var c1Probs: [Double]?

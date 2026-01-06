@@ -10,10 +10,10 @@ import SwiftData
 
 @Model
 class Topic {
-    var title: String
+    var title: String = ""
     var source: String?
-    var essays: [Essay] = []
-    var stimulusTexts: [[String: String]]
+    var essays: [Essay]? = []
+    var stimulusTexts: [[String: String]] = []
     
     init(title: String, source: String? = nil, essays: [Essay] = [], stimulusTexts: [[String: String]]) {
         self.title = title
