@@ -47,7 +47,9 @@ struct ImportConfirmationView: View {
                 }
                 
                 ToolbarItem {
-                    Toggle("Buscar", systemImage: "magnifyingglass", isOn: $isShowingFindNavigator)
+                    Button("Buscar", systemImage: "text.page.badge.magnifyingglass") {
+                        isShowingFindNavigator = true
+                    }
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
